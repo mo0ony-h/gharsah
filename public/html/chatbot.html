@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>غرسة – شات بوت</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/chatbot.css">
+  <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2025/04/22/16/20250422161954-2QKUTDMG.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo-area">
+      <img src="../images/logo.png" alt="شعار غرسة" class="logo-img-small">
+      <h1>غرسة</h1>
+    </div>
+    <nav class="nav-menu">
+      <a href="../html/homepage.html">الرئيسية</a>
+      <a href="../html/diary.html">يوميات النباتات</a>
+      <a href="../html/forum.html">المنتدى</a>
+      <a href="../html/shops.html">المتاجر</a>
+      <a href="../html/profile.html">الملف الشخصي</a>
+    </nav>
+  </header>
+
+  <!-- Chat Interface -->
+  <div class="chat-container">
+    <div class="chat-messages" id="chatMessages">
+      <!-- Initial Bot Message -->
+      <div class="message bot-msg">
+        <p>مرحبا! أنا هنا لمساعدتك في أي أسئلة تتعلق بالنباتات والزراعة. كيف يمكنني مساعدتك اليوم؟</p>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="اكتب رسالتك هنا...">
+      <button class="send-btn">إرسال</button>
+      <div class="loader" id="loadingIndicator"></div>
+    </div>
+  </div>
+
+  <!-- Botpress Shareable URL -->
+  <script src="https://cdn.botpress.cloud/webchat/v2.3/shareable.html?configUrl=https://files.bpcontent.cloud/2025/04/22/16/20250422161939-GDNVGCQX.json"></script>
+
+  <!-- Optional Custom JavaScript for further interactivity -->
+</body>
+</html>

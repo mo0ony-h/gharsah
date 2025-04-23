@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>غرسة - تسجيل الدخول</title>
+  <!-- استيراد خطوط Google للحصول على طباعة حديثة -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- الربط مع ملف CSS الخارجي -->
+  <link rel="stylesheet" href="../css/sign.css">
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <div class="logo">
+        <!-- تأكد من تغيير "logo.png" إلى مسار ملف الشعار الخاص بك -->
+        <img src="../images/logo.png" alt="شعار غرسة" class="logo-img">
+        <h1>غرسة</h1>
+        <span class="tagline">معاً لتمكين الوعي البيئي والمشاركة المجتمعية</span>
+      </div>
+      <form action="/signin" method="post" class="sign-in-form">
+        <div class="input-group">
+          <label for="email">البريد الإلكتروني</label>
+          <input type="email" id="email" name="email" placeholder="أدخل بريدك الإلكتروني" required>
+        </div>
+        <div class="input-group">
+          <label for="password">كلمة المرور</label>
+          <input type="password" id="password" name="password" placeholder="أدخل كلمة المرور" required>
+        </div>
+        <button type="submit" class="btn-signin">تسجيل الدخول</button>
+        <div class="footer">
+          <p>لا تملك حسابًا؟ <a href="../html/signup.html">سجل الان</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script src="../js/signin.js"></script>
+
+</body>
+</html>

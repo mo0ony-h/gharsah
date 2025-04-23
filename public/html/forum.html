@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>منتدى غرسة</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../css/forum.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo-area">
+      <img src="../images/logo.png" alt="شعار غرسة" class="logo-img-small">
+      <h1>منتدى غرسة</h1>
+    </div>
+    <nav class="nav-menu">
+      <a href="homepage.html">الرئيسية</a>
+      <a href="diary.html">يوميات النباتات</a>
+      <a href="forum.html" class="active">المنتدى</a>
+      <a href="shops.html">المتاجر</a>
+      <a href="profile.html">الملف الشخصي</a>
+    </nav>
+  </header>
+
+  <!-- Forum Content -->
+  <main class="forum-container">
+    <section class="new-post">
+      <h2>أنشئ مشاركة جديدة</h2>
+      <!-- Add author input field -->
+      <input type="text" id="author" placeholder="اسمك" />
+      <textarea placeholder="شارك تجربتك أو اسأل سؤالاً..." id="postContent"></textarea>
+      <button id="submitPost">نشر</button>
+    </section>
+
+    <section class="posts" id="postsList">
+      <h2>أحدث المشاركات</h2>
+      <!-- Example Post -->
+      <div class="post">
+        <p><strong>سارة:</strong> زرعت شجرة ليمون في الحديقة الأسبوع الماضي، هل تحتاج للكثير من الماء؟ 🍋</p>
+      </div>
+      <!-- More posts will be added by JS -->
+    </section>
+  </main>
+
+  <script src="../js/forum.js"></script>
+
+</body>
+</html>

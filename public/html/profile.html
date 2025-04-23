@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>غرسة - الملف الشخصي</title>
+  <link rel="stylesheet" href="../css/profile.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="profile-page">
+
+ 
+
+
+  <header class="main-header">
+    <div class="logo-area">
+      <img src="../images/logo.png" alt="شعار غرسة" class="logo-img">
+      <h1>غرسة</h1>
+    </div>
+    <nav class="nav-menu">
+      <a href="../html/homepage.html">الرئيسية</a>
+      <a href="../html/forum.html">المنتدى</a>
+      <a href="../html/chatbot.html">شات بوت</a>
+      <a href="../html/diary.html">يوميات النباتات</a>
+      <a href="../html/shops.html">المتجر</a>
+    </nav>
+  </header>
+
+  <div id="auth-section">
+    <button class="edit-btn" id="signin-btn">🔐 تسجيل الدخول</button>
+  </div>
+  
+
+  <section class="profile-section" id="profile-section" style="display: none;">
+    <div class="avatar-container">
+      <img src="../images/user-avatar.png" alt="صورة الملف الشخصي" class="profile-avatar" id="profile-avatar">
+    </div>
+
+    <div class="profile-meta">
+      <div class="profile-header-content">
+        <h2 id="username"></h2>
+        <p class="bio" id="user-bio"></p>
+      </div>
+      
+      <div class="profile-stats">
+        <div class="stat-item">
+          <span class="stat-number" id="followers-count">٠</span>
+          <span class="stat-label">متابِع</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="following-count">٠</span>
+          <span class="stat-label">متابَع</span>
+        </div>
+      </div>
+
+      <button id="follow-btn" class="edit-btn" style="display: none;">متابعة</button>
+      <button class="edit-btn" id="edit-profile-btn">✏️ تعديل الملف</button>
+      <button class="edit-btn" id="signout-btn">🚪 تسجيل الخروج</button>
+    </div>
+
+    <div class="profile-details">
+      <div class="detail-card">
+        <h3>معلومات أساسية</h3>
+        <ul class="info-list">
+          <li><strong>الاسم الكامل:</strong> <span id="full-name">.</span></li>
+          <li><strong>الموقع:</strong> <span id="user-location">.</span></li>
+          <li><strong>تاريخ الانضمام:</strong> <span id="user-joined-date">.</span></li>
+          <li><strong>مستوى الخبرة:</strong> <span id="user-experience">.</span></li>
+        </ul>
+      </div>
+
+      <div class="detail-card">
+        <h3>إحصائيات النشاط</h3>
+        <div class="activity-stats">
+          <div class="activity-item">
+            <span class="activity-number" id="plants-added"></span>
+            <span class="activity-label">نبات مضافة</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-number" id="forum-posts">٠</span>
+            <span class="activity-label">مشاركات المنتدى</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-number" id="comments-count">٠</span>
+            <span class="activity-label">تعليقات</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- edit profile modal -->
+<div id="edit-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h3>تعديل الملف الشخصي</h3>
+    <form id="profile-form">
+      <div class="form-group">
+        <label for="full-name-input">الاسم الكامل:</label>
+        <input type="text" id="full-name-input" required>
+      </div>
+
+      <label for="experience-select">مستوى الخبرة:</label>
+      <select id="experience-select">
+        <option value="مبتدئ">مبتدئ</option>
+        <option value="متوسط">متوسط</option>
+        <option value="متقدم">متقدم</option>
+      </select>      
+
+      <div class="form-group">
+        <label for="location-input">الموقع:</label>
+        <input type="text" id="location-input" required>
+      </div>
+
+      <div class="form-group">
+        <label for="bio-textarea">السيرة الذاتية:</label>
+        <textarea id="bio-textarea" rows="4"></textarea>
+      </div>
+
+      <button type="submit" class="save-btn">حفظ التغييرات</button>
+    </form>
+  </div>
+</div>
+
+  </section>
+  <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
+  <script src="https://files.bpcontent.cloud/2025/04/22/16/20250422161954-2QKUTDMG.js"></script>  
+
+  <script src="../js/profile.js"></script>
+</body>
+</html>
