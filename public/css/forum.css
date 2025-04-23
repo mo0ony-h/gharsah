@@ -3,7 +3,7 @@
 body.forum-page {
   font-family: 'Roboto', sans-serif;
   margin: 0;
-  background: url('../images/forum-bg.jpg') center/cover fixed no-repeat;
+  background: url('../images/background.png') center/cover fixed no-repeat;
   color: #333;
 }
 
