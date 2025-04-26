@@ -8,10 +8,17 @@ const plantSchema = new mongoose.Schema({
   location: { lat: Number, lng: Number },
   reminderInterval: Number,
   lastWatered: { type: Date, default: null },  
-  progressImages: ["data:image/jpeg;base64,...", "data:image/png;base64,..."],
+  progressImages: [
+    {
+      _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+      image: { type: String, required: true },
+      date: { type: Date, default: Date.now }
+    }
+  ],
   image: String,
-  userId: { type: mongoose.Schema.Types.ObjectId,ref: "User", required: true }
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
 });
+
 
 module.exports = mongoose.model("Plant", plantSchema);
 

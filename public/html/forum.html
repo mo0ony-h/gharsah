@@ -2,48 +2,99 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>منتدى غرسة</title>
+  <title>غرسة – المنتدى الزراعي</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="../css/forum.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body>
-  <!-- Header -->
+<body class="forum-page">
+
+  <!-- الهيدر -->
   <header class="main-header">
     <div class="logo-area">
-      <img src="../images/logo.png" alt="شعار غرسة" class="logo-img-small">
-      <h1>منتدى غرسة</h1>
+      <img src="../images/logo.png" alt="شعار غرسة" class="logo-img">
+      <h1>غرسة</h1>
     </div>
     <nav class="nav-menu">
-      <a href="homepage.html">الرئيسية</a>
-      <a href="diary.html">يوميات النباتات</a>
-      <a href="forum.html" class="active">المنتدى</a>
-      <a href="shops.html">المتاجر</a>
-      <a href="profile.html">الملف الشخصي</a>
+      <a href="../html/homepage.html">الرئيسية</a>
+      <a href="../html/diary.html">يوميات النباتات</a>
+      <a href="../html/shops.html">التسوق</a>
+      <a href="../html/profile.html">الملف الشخصي</a>
     </nav>
   </header>
 
-  <!-- Forum Content -->
   <main class="forum-container">
-    <section class="new-post">
-      <h2>أنشئ مشاركة جديدة</h2>
-      <!-- Add author input field -->
-      <input type="text" id="author" placeholder="اسمك" />
-      <textarea placeholder="شارك تجربتك أو اسأل سؤالاً..." id="postContent"></textarea>
-      <button id="submitPost">نشر</button>
-    </section>
+    <h2>🌿 المنتدى الزراعي</h2>
+    <p class="intro">شارك خبراتك الزراعية واستفساراتك مع مجتمع غرسة.</p>
 
-    <section class="posts" id="postsList">
-      <h2>أحدث المشاركات</h2>
-      <!-- Example Post -->
-      <div class="post">
-        <p><strong>سارة:</strong> زرعت شجرة ليمون في الحديقة الأسبوع الماضي، هل تحتاج للكثير من الماء؟ 🍋</p>
-      </div>
-      <!-- More posts will be added by JS -->
-    </section>
+    <!-- أدوات: بحث + تصفية + إضافة منشور -->
+    <div class="forum-tools">
+      <input type="text" id="search-input" placeholder="🔍 ابحث في المنتدى...">
+      <select id="filter-category">
+        <option value="">عرض كل التصنيفات</option>
+        <option value="نصيحة">نصيحة</option>
+        <option value="استفسار">استفسار</option>
+        <option value="تجربة">تجربة</option>
+      </select>
+      <button id="new-post-btn">➕ إضافة منشور جديد</button>
+    </div>
+
+    <!-- قائمة المنشورات -->
+    <div class="posts-list" id="postsList"></div>
   </main>
 
-  <script src="../js/forum.js"></script>
+  <!-- مودال إضافة منشور -->
+  <div id="post-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="close-post-modal">&times;</span>
+      <h3>إضافة منشور جديد</h3>
+      <form id="post-form">
+        <div class="form-group">
+          <label for="post-title">عنوان المنشور</label>
+          <input type="text" id="post-title" required>
+        </div>
+        <div class="form-group">
+          <label for="post-category">التصنيف</label>
+          <select id="post-category" required>
+            <option value="نصيحة">نصيحة</option>
+            <option value="استفسار">استفسار</option>
+            <option value="تجربة">تجربة</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="post-content">المحتوى</label>
+          <textarea id="post-content" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="post-img-file">أضف صورة (اختياري)</label>
+          <input type="file" id="post-img-file" accept="image/*">
+        </div>
+        <button type="submit" class="btn-submit">نشر</button>
+      </form>
+    </div>
+  </div>
 
+  <!-- مودال تفاصيل المنشور -->
+  <div id="detail-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="close-detail-modal">&times;</span>
+      <div id="detail-container"></div>
+    </div>
+  </div>
+
+  <div id="reply-modal" style="display: none;">
+    <div class="modal-content">
+      <h3>رد على المنشور</h3>
+      <textarea id="reply-content" placeholder="اكتب ردك هنا..."></textarea>
+      <input type="file" id="reply-image" accept="image/*">
+      <button id="submit-reply">نشر الرد</button>
+      <button id="close-reply-modal">إغلاق</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
+  <script src="https://files.bpcontent.cloud/2025/04/22/16/20250422161954-2QKUTDMG.js"></script>  
+
+  <script src="../js/forum.js" type="text/javascript"></script>
 </body>
 </html>

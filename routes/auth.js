@@ -4,29 +4,51 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Plant = require("../models/Plants");
 const ForumPost = require('../models/ForumPost');
-
-
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 const router = express.Router();
 
 // Middleware
-function authMiddleware(req, res, next) {
-  const token = req.headers['authorization']?.split(' ')[1];
-  if (!token) return res.status(401).json({ msg: 'No token, access denied' });
-
+const authMiddleware = async (req, res, next) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (e) {
-    res.status(401).json({ msg: 'Token is not valid' });
+    const token = req.headers['authorization']?.split(' ')[1]; // Get token from the header
+    if (!token) {
+      return res.status(401).json({ error: 'No token provided' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Decode the token
+
+    // Fetch the full user data based on the decoded ID
+    const user = await User.findById(decoded.id); // Assuming decoded contains 'id'
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    req.user = user; // Assign full user object to req.user
+    next(); // Move to the next middleware or route handler
+  } catch (err) {
+    res.status(401).json({ error: 'Invalid or expired token' });
   }
-}
+};
+
 
 // GET user profile
 router.get('/profile', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
+
     const plantCount = await Plant.countDocuments({ userId: req.user.id });
+    const postCount = await ForumPost.countDocuments({ author: req.user.id });
+
+    // To count replies, you need to find posts authored by anyone, but replies authored by the user
+    const posts = await ForumPost.find({ "replies.author": req.user.id }, { replies: 1 });
+
+    let replyCount = 0;
+    posts.forEach(post => {
+      replyCount += post.replies.filter(reply => reply.author.toString() === req.user.id).length;
+    });
+
     if (!user) {
       return res.status(404).json({ msg: 'User not found' });
     }
@@ -36,7 +58,9 @@ router.get('/profile', authMiddleware, async (req, res) => {
       ...user.toObject(),
       followers: user.followers.length,  // Count of followers
       following: user.following.length,  // Count of following
-      plantCount: plantCount
+      plantCount,
+      postCount,
+      replyCount
     });
   } catch (err) {
     res.status(500).json({ msg: 'Server error' });
@@ -142,7 +166,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Create JWT token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
     // Respond with the token and user details
     res.status(200).json({
@@ -342,50 +366,210 @@ router.get("/plants/:id/progress", authMiddleware, async (req, res) => {
   }
 });
 
-router.delete("/plants/:id/progress/:imageId", authMiddleware, async (req, res) => {
-  const { id, imageId } = req.params;
+router.delete("/plants/:plantId/progress/:imageId", authMiddleware, async (req, res) => {
+  const { plantId, imageId } = req.params;
   const userId = req.user.id;
 
   try {
-      const plant = await Plant.findOne({ _id: id, userId });
+    const plant = await Plant.findOneAndUpdate(
+      { _id: plantId, userId }, 
+      { $pull: { progressImages: { _id: imageId } } },
+      { new: true }
+    );
 
-      if (!plant) {
-          return res.status(404).json({ msg: "Plant not found" });
-      }
+    if (!plant) {
+      return res.status(404).json({ message: "Plant not found or not owned by user" });
+    }
 
-      // Remove the image from the progressImages array
-      plant.progressImages = plant.progressImages.filter(image => image !== imageId);
-
-      await plant.save();
-
-      res.json({ msg: "Image deleted successfully" });
-  } catch (err) {
-      console.error(err);
-      res.status(500).json({ msg: "Failed to delete the image" });
+    res.status(200).json({ message: "Image deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting image:", error);
+    res.status(500).json({ message: "Server error while deleting image" });
   }
 });
 
+
 // Get all forum posts
-router.get('/posts', async (req, res) => {
+router.get('/posts', authMiddleware, async (req, res) => {
   try {
-    const posts = await ForumPost.find().sort({ createdAt: -1 }); // newest first
+    const posts = await ForumPost.find()
+    .populate({
+      path: 'author',
+      select: 'name'
+    })
+    .populate({
+      path: 'replies.author',
+      select: 'name'
+    })
+    .sort({ createdAt: -1 });
+  
+  
     res.json(posts);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Failed to fetch posts' });
   }
 });
 
-// Add a new forum post
-router.post('/posts', async (req, res) => {
-  const { author, content } = req.body;
+
+
+// Post a new forum entry
+router.post('/posts', authMiddleware, upload.single('image'), async (req, res) => {
+  const { title, category, content } = req.body;
+  const image = req.file ? req.file.buffer.toString('base64') : null;
+
   try {
-    const newPost = new ForumPost({ author, content });
+
+    const newPost = new ForumPost({
+      title,
+      category,
+      content,
+      image,
+      author: req.user._id,
+      createdAt: new Date(),
+      likes: 0,
+      replies: []
+    });
+
     await newPost.save();
     res.status(201).json(newPost);
   } catch (err) {
-    res.status(400).json({ message: 'Error adding post' });
+    console.error(err);
+    res.status(500).json({ error: 'Failed to post' });
   }
 });
+
+
+
+// Like a post
+router.post('/posts/:id/like', authMiddleware, async (req, res) => {
+  try {
+    const post = await ForumPost.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    // Ensure likedBy is an array
+    if (!Array.isArray(post.likedBy)) {
+      post.likedBy = [];
+    }
+
+    const userId = req.user.id;
+
+    if (post.likedBy.includes(userId)) {
+      // If already liked, unlike it
+      post.likes = Math.max(0, post.likes - 1); // prevent negative likes
+      post.likedBy = post.likedBy.filter(id => id !== userId);
+    } else {
+      // If not liked yet, like it
+      post.likes += 1;
+      post.likedBy.push(userId);
+    }
+
+    await post.save();
+    res.json(post);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to toggle like' });
+  }
+});
+
+
+
+// Reply to a post
+router.post('/posts/:id/reply', authMiddleware, upload.single('image'), async (req, res) => {
+  const { content } = req.body;
+  const image = req.file ? req.file.buffer.toString('base64') : null;
+
+  if (!content) {
+    return res.status(400).json({ error: 'Content is required for the reply' });
+  }
+
+  try {
+    const post = await ForumPost.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    const reply = {
+      content,
+      image,
+      author: req.user._id,
+      createdAt: new Date(),
+      score: 0,
+    };
+
+    post.replies.push(reply);
+    await post.save();
+    res.json(post);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to reply to post' });
+  }
+});
+
+
+// DELETE a post
+router.delete('/posts/:postId', authMiddleware, async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.user._id; // Assuming you have authentication middleware
+
+    const post = await ForumPost.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ error: 'المنشور غير موجود' });
+    }
+
+    if (post.author.toString() !== userId.toString()) {
+      return res.status(403).json({ error: 'غير مصرح لك بحذف هذا المنشور' });
+    }
+
+    await ForumPost.findByIdAndDelete(postId);
+
+    res.json({ message: 'تم حذف المنشور بنجاح' });
+
+  } catch (err) {
+    console.error('Delete Post Error:', err);
+    res.status(500).json({ error: 'خطأ في حذف المنشور' });
+  }
+});
+
+// DELETE a reply
+router.delete('/posts/:postId/reply/:replyId', authMiddleware, async (req, res) => {
+  try {
+    const { postId, replyId } = req.params;
+    const userId = req.user.id;
+
+    const post = await ForumPost.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: 'المنشور غير موجود' });
+    }
+
+    const reply = post.replies.id(replyId); // This will get the reply object from the replies array
+    if (!reply) {
+      return res.status(404).json({ error: 'الرد غير موجود' });
+    }
+
+    // Check if the logged-in user is the author of the reply
+    if (reply.author.toString() !== userId.toString()) {
+      return res.status(403).json({ error: 'غير مصرح لك بحذف هذا الرد' });
+    }
+
+    // Remove the reply from the post
+    post.replies.pull({ _id: replyId });
+    await post.save();
+
+
+    res.json({ message: 'تم حذف الرد بنجاح' });
+
+  } catch (err) {
+    console.error('Delete Reply Error:', err);
+    res.status(500).json({ error: 'خطأ في حذف الرد' });
+  }
+});
+
+
 
 
 module.exports = router;

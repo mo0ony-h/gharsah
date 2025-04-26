@@ -1,8 +1,28 @@
 const mongoose = require('mongoose');
 
-const ForumPostSchema = new mongoose.Schema({
-  author: String,
+const replySchema = new mongoose.Schema({
   content: String,
-}, { timestamps: true });
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Reference to User model
+  image: String,
+  createdAt: { type: Date, default: Date.now },
+});
 
-module.exports = mongoose.model('ForumPost', ForumPostSchema);
+const postSchema = new mongoose.Schema({
+  title: String,
+  category: String,
+  content: String,
+  image: String,
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  createdAt: Date,
+  likes: {
+    type: Number,
+    default: 0,
+  },
+  likedBy: {
+    type: [String],
+    default: [],
+  },
+  replies: [replySchema]
+})
+
+module.exports = mongoose.model('ForumPost', postSchema);

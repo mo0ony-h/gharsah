@@ -11,10 +11,11 @@ const userSchema = new mongoose.Schema({
   avatar: { type: String, default: '' },
   followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  plants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Plant' }]
+  plants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Plant' }],
+  postCount: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now }
 });
 
-// Create and export the User model
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

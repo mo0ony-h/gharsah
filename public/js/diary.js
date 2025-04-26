@@ -327,6 +327,14 @@ document.getElementById("entry-form").addEventListener("submit", e => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
 
+
+    // When saving location
+    const [lat, lng] = loc.split(",");
+    plantData.location = {
+      lat: parseFloat(lat),
+      lng: parseFloat(lng)
+    };
+
     const plantData = {
         name,
         notes,
@@ -401,7 +409,7 @@ document.getElementById("entry-form").addEventListener("submit", e => {
     // Helper function to update in database
     async function updatePlantInDatabase(id, plantData) {
         try {
-            fetch('/api/auth/plants/${id}', {
+            fetch(`/api/auth/plants/${id}`, {
                 method: 'GET',  // Try a GET request first to see if the endpoint exists
                 headers: {
                   'Content-Type': 'application/json',
@@ -438,7 +446,7 @@ document.getElementById("entry-form").addEventListener("submit", e => {
 });
 
 function fetchPlants() {
-    fetch("/api/auth/plants", {
+    fetch(`/api/auth/plants`, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`
         }
@@ -459,48 +467,50 @@ function fetchPlants() {
 function renderProgressImages(progressImages, plantId) {
     const card = document.querySelector(`.diary-card[data-id="${plantId}"]`);
     if (!card) return console.warn("Card not found for plant ID:", plantId);
-
+  
     const gallery = card.querySelector(".progress-gallery");
     if (!gallery) return console.warn("Gallery not found in card:", plantId);
-
-    gallery.innerHTML = ""; // Optional: clear old images first
-
+  
+    gallery.innerHTML = ""; // Clear old images first
+  
     progressImages.forEach((image) => {
-        const imgDiv = document.createElement("div");
-        imgDiv.classList.add("progress-img");
-        imgDiv.innerHTML = `
-            <img src="${image}" alt="Progress Image">
-            <button class="del-progress">🗑️</button>
-        `;
-        gallery.appendChild(imgDiv);
-
-        imgDiv.querySelector(".del-progress").addEventListener("click", async () => {
-            // Get the plant ID and image ID (e.g., Base64 string or file ID)
-            const plantId = card.getAttribute("data-id"); // Get the plant ID from the card
-            const imageId = imgDiv.querySelector("img").src; // This assumes the image is stored as a Base64 string
-        
-            try {
-                // Delete image from the backend
-                const res = await fetch(`/api/auth/plants/${plantId}/progress/${encodeURIComponent(imageId)}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Authorization": `Bearer ${localStorage.getItem("token")}`
-                    }
-                });
-                if (!res.ok) {
-                    throw new Error("Failed to delete image from server");
-                }
-                // Remove the image from the DOM
-                imgDiv.remove();
-                console.log("Image deleted successfully");
-            } catch (error) {
-                console.error("Error deleting image:", error);
+      const imgDiv = document.createElement("div");
+      imgDiv.classList.add("progress-img");
+      
+      imgDiv.innerHTML = `
+        <div class="progress-entry">
+          <img src="${image.image}" alt="Progress Image">
+          <p class="date-info">${new Date(image.date).toLocaleDateString('ar-EG')}</p>
+          <button class="del-progress" data-imageid="${image._id}">🗑️</button>
+        </div>
+      `;
+      gallery.appendChild(imgDiv);
+  
+      imgDiv.querySelector(".del-progress").addEventListener("click", async () => {
+        const plantId = card.getAttribute("data-id");
+        const imageId = imgDiv.querySelector(".del-progress").getAttribute("data-imageid");
+  
+        try {
+          const res = await fetch(`/api/auth/plants/${plantId}/progress/${imageId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem("token")}`
             }
-        });
-        
+          });
+          
+          if (!res.ok) {
+            throw new Error("Failed to delete image from server");
+          }
+          
+          imgDiv.remove();
+          console.log("Image deleted successfully");
+        } catch (error) {
+          console.error("Error deleting image:", error);
+        }
+      });
     });
-}
-
+  }
 
 async function fetchPlantProgress(plantId) {
     try {

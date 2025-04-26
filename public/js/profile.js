@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
             avatar: data.avatar || '../images/user-avatar.png',
             createdAt: data.createdAt,
             plantCount: data.plantCount || 0,
-            forumPostsCount: data.forumPostsCount || 0,
-            commentsCount: data.commentsCount || 0
+            postCount: data.postCount || 0,
+            replyCount: data.replyCount || 0
           };
 
           profileSection.style.display = 'block';
@@ -144,72 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Follow/Unfollow functionality
-  const followBtn = document.getElementById('follow-btn');
-  // Get user ID from query string
-  const urlParams = new URLSearchParams(window.location.search);
-  const targetUserId = urlParams.get('user'); // e.g. '68034e61767a42e1cad008dc'
 
-  function parseJwt(token) {
-    try {
-      return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-      return null;
-    }
-  }
-  const decoded = parseJwt(token);
-  const loggedInUserId = decoded?.id;
-
-
-  if (targetUserId !== loggedInUserId) {
-    if (followBtn) {
-      followBtn.addEventListener('click', async () => {
-        const action = followBtn.textContent.toLowerCase();
-        const url = action === 'follow' ? `/api/auth/follow/${targetUserId}` : `/api/auth/unfollow/${targetUserId}`;
-    
-        try {
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            }
-          });
-    
-          const data = await response.json();
-    
-          if (response.ok) {
-            followBtn.textContent = action === 'follow' ? 'Unfollow' : 'Follow';
-            alert(data.msg);
-          } else {
-            alert(data.msg || 'Error following/unfollowing');
-          }
-        } catch (err) {
-          console.error(err);
-          alert('Error following/unfollowing');
-        }
-      });
-    }
-  } else {
-    // Hide Follow button if viewing own profile
-    if (followBtn) {
-      followBtn.style.display = 'none';
-    }
-  }
-
-  // Display follower and following counts
-  const followersCountElem = document.getElementById('followers-count');
-  const followingCountElem = document.getElementById('following-count');
-
-  if (targetUserId) {
-    fetch(`/api/auth/profile/${targetUserId}`)
-      .then(response => response.json())
-      .then(data => {
-        if (followersCountElem) followersCountElem.textContent = data.followers;
-        if (followingCountElem) followingCountElem.textContent = data.following;
-      })
-      .catch(err => console.error('Error fetching user data:', err));
-  }
 
   // Function to update the profile UI with new data
   function updateProfileUI() {
@@ -225,8 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
       new Date(userData.createdAt).toLocaleDateString('ar-EG');
 
     document.getElementById('plants-added').textContent = userData.plantCount;
-    document.getElementById('forum-posts').textContent = userData.forumPostsCount;
-    document.getElementById('comments-count').textContent = userData.commentsCount;
+    document.getElementById('forum-posts').textContent = userData.postCount;
+    document.getElementById('comments-count').textContent = userData.replyCount;
   }
 
 });
