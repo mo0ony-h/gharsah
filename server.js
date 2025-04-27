@@ -60,12 +60,7 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-const path = require('path');
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// For any other route, serve index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
