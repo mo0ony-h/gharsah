@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
 const dotenv = require('dotenv');
 const session = require('express-session');
 const cors = require('cors');
@@ -38,13 +39,28 @@ app.get('*', (req, res) => {
 
 
 // Connect to the database
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log('✅ Connected to DB:', mongoose.connection.name))
-  .catch((err) => console.error('❌ MongoDB connection error:', err));
+const mongoURI = 'mongodb://localhost:27017/gharsahDB';
 
+// Connect to MongoDB
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// Set up session store with MongoDB
+app.use(session({
+  secret: 'theAirisgowoo',
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: mongoURI,  // MongoDB connection URL
+    ttl: 14 * 24 * 60 * 60 // set TTL (Time To Live) for sessions (14 days)
+  }),
+  cookie: { secure: false } 
+}));
+
+app.get('/', (req, res) => {
+  res.send('Session setup with MongoDB!');
+});
 // Function to disconnect from the database
 function disconnectDatabase() {
   mongoose.disconnect()
@@ -65,10 +81,6 @@ process.on('SIGINT', () => {
 // Routes
 app.use('/api/auth', authRoutes); // Use the routes for signup and signin
 
-// Test route
-app.get('/', (req, res) => {
-  res.send('Server is running');
-});
 
 // User route (optional - can check if user is logged in)
 app.get('/api/user', (req, res) => {
