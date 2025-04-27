@@ -393,24 +393,32 @@ router.delete("/plants/:plantId/progress/:imageId", authMiddleware, async (req, 
 // Get all forum posts
 router.get('/posts', authMiddleware, async (req, res) => {
   try {
-    const posts = await ForumPost.find()
-    .populate({
-      path: 'author',
-      select: 'name'
-    })
-    .populate({
-      path: 'replies.author',
-      select: 'name'
-    })
-    .sort({ createdAt: -1 });
-  
-  
+    const { category } = req.query;
+
+    let query = {};
+
+    if (category) {
+      query.category = category;
+    }
+
+    const posts = await ForumPost.find(query)
+      .populate({
+        path: 'author',
+        select: 'name'
+      })
+      .populate({
+        path: 'replies.author',
+        select: 'name'
+      })
+      .sort({ createdAt: -1 });
+
     res.json(posts);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch posts' });
   }
 });
+
 
 
 
