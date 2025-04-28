@@ -21,15 +21,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Check for password strength (without special characters)
+    if (!isStrongPassword(password)) {
+      alert('❌ يجب أن تحتوي كلمة المرور على الأقل على 8 أحرف، مع حرف كبير، حرف صغير، ورقم');
+      return;
+    }
+
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({username, email, password })
+        body: JSON.stringify({ username, email, password })
       });
-    
+
       const data = await response.json();
-    
+
       if (response.ok) {
         alert('✅ تم التسجيل بنجاح! سيتم توجيهك لتسجيل الدخول.');
         window.location.href = '../html/signin.html';
@@ -40,6 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Registration Error:', error);
       alert('❌ حدث خطأ أثناء الاتصال بالخادم');
     }
-    
+
   });
+
+  // Password strength check function without special characters
+  function isStrongPassword(password) {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return passwordRegex.test(password);
+  }
 });
