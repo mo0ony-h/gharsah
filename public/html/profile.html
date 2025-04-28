@@ -19,6 +19,7 @@
     </div>
     <nav class="nav-menu">
       <a href="../html/homepage.html">الرئيسية</a>
+      <a href="../html/profile.html">الملف الشخصي</a>
       <a href="../html/forum.html">المنتدى</a>
       <a href="../html/diary.html">يوميات النباتات</a>
       <a href="../html/shops.html">المتجر</a>
@@ -26,7 +27,7 @@
   </header>
 
   <div id="auth-section">
-    <button class="edit-btn" id="signin-btn">🔐 تسجيل الدخول</button>
+    <button class="edit-btn" id="signin-btn" style="display: none;">🔐 تسجيل الدخول</button>
   </div>
   
 
@@ -43,16 +44,16 @@
       
       <div class="profile-stats">
         <div class="stat-item">
-          <span class="stat-number" id="followers-count">٠</span>
+          <span class="stat-number" id="followers-count">0</span>
           <span class="stat-label">متابِع</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number" id="following-count">٠</span>
+          <span class="stat-number" id="following-count">0</span>
           <span class="stat-label">متابَع</span>
         </div>
       </div>
 
-      <button id="follow-btn" class="edit-btn" style="display: none;">متابعة</button>
+      <button class="edit-btn" id="follow-btn" style="display:none;">متابعة</button>
       <button class="edit-btn" id="edit-profile-btn">✏️ تعديل الملف</button>
       <button class="edit-btn" id="signout-btn">🚪 تسجيل الخروج</button>
     </div>
@@ -123,6 +124,20 @@
   </section>
   <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
   <script src="https://files.bpcontent.cloud/2025/04/22/16/20250422161954-2QKUTDMG.js"></script>  
+
+  <script>
+    const username = window.location.pathname.split('/')[2];
+
+fetch(`/api/auth/profile/${username}`)
+  .then(res => res.json())
+  .then(user => {
+    document.getElementById('username').innerText = user.username;
+    document.getElementById('bio').innerText = user.bio || 'لا يوجد نبذة بعد';
+    // more fields
+  })
+  .catch(err => console.error(err));
+
+  </script>
 
   <script src="../js/profile.js"></script>
 </body>

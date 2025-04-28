@@ -54,7 +54,7 @@ document.getElementById('filter-category').addEventListener('change', loadPosts)
 async function loadPosts() {
   const container = document.getElementById("postsList");
   const categoryFilter = document.getElementById("filter-category").value;
-  const token = localStorage.getItem('token'); // ✅ Add this line
+  const token = localStorage.getItem('token');
 
   const tokenPayload = JSON.parse(atob(token.split('.')[1]));
   const loggedInUserId = tokenPayload.id;  
@@ -68,7 +68,7 @@ async function loadPosts() {
 
     const res = await fetch(url, {
       headers: {
-        'Authorization': `Bearer ${token}` // ✅ Send token in request
+        'Authorization': `Bearer ${token}`
       }
     });
 
@@ -82,8 +82,9 @@ async function loadPosts() {
 
     container.innerHTML = posts.map(post => `
       <div class="post">
-      <h4>${post.author?.name || "Unknown"}</h4>
-        <p>${post.content}</p>
+      <h4><a href="/profile/${post.author?.username}" class="author-link">${post.author?.username || "Unknown"}</a></h4>
+        <p>العنوان: ${post.title}</p>
+        <p>المحتوى: ${post.content}</p>
         <small>${new Date(post.createdAt).toLocaleString('ar-EG')}</small>
         <div class="post-actions">
           <button class="btn-action" onclick="likePost('${post._id}')">❤️ ${post.likes ?? 0}</button>
@@ -94,7 +95,7 @@ async function loadPosts() {
         </div>
         ${post.replies.map(reply => `
           <div class="reply">
-            <p><strong>${reply.author?.name || "Unknown"}</strong>: ${reply.content}</p>
+            <p><strong><a href="/profile/${reply.author?.username}" class="author-link">${reply.author?.username || "Unknown"}</a></strong>: ${reply.content}</p>
             ${reply.author?._id === loggedInUserId ? `
           <button class="btn-action" onclick="deleteReply('${post._id}', '${reply._id}')">🗑️ حذف الرد</button>
         ` : ''}
@@ -280,5 +281,16 @@ function closePostModal() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  const currentPath = window.location.pathname;
+  const navLinks = document.querySelectorAll('.nav-menu a');
+
+  navLinks.forEach(link => {
+    if (link.href.includes(currentPath)) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+  
   loadPosts();
 });

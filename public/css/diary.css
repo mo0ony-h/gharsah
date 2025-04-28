@@ -46,10 +46,20 @@ body.diary-page {
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
-  }
-  .nav-menu a:hover {
-    color: #2196F3;
-  }
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+.nav-menu a:hover {
+    background: #4CAF50;
+    color: rgb(255, 255, 255);
+}
+
+.nav-menu a.active {
+    background: #4CAF50;  /* Highlight background */
+    color: #fff;          /* Text color for the active link */
+    font-weight: 700;      /* Optional: Make it bolder */
+}
   
   /*-----------------------------------
     رأس الصفحة + زر إضافة
@@ -298,26 +308,27 @@ body.diary-page {
   /*-----------------------------------
     مودالات الإضافة والتعديل
   -----------------------------------*/
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    overflow: auto;
-  }
-  .modal-content {
-    background-color: #FFFFFF;
-    margin: 5% auto;
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 500px;
-    position: relative;
-  }
+/* نافذة التعديل */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);  /* Darker modal background */
+  z-index: 1000;
+}
+
+.modal-content {
+  background: rgba(33, 33, 33, 0.9);  /* Dark background for modal */
+  width: 90%;
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 10px;
+  position: relative;
+}
   .close,
   .close-edit {
     position: absolute;

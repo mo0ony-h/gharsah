@@ -56,8 +56,8 @@ router.get('/profile', authMiddleware, async (req, res) => {
     // Return the user data including followers and following counts
     res.json({
       ...user.toObject(),
-      followers: user.followers.length,  // Count of followers
-      following: user.following.length,  // Count of following
+      followersCount: user.followers.length,
+      followingCount: user.following.length,
       plantCount,
       postCount,
       replyCount
@@ -67,14 +67,26 @@ router.get('/profile', authMiddleware, async (req, res) => {
   }
 });
 
+router.get('/profile/:username', async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username }).select('-password');
+    
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+    
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ msg: 'Failed to get user profile' });
+  }
+});
+
 // PUT update user profile
 router.put('/profile', authMiddleware, async (req, res) => {
-  const { fullName, location, bio, experience, avatar } = req.body;
+  const { fullName, location, bio, experience, avatar, username } = req.body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
-      { fullName, location, bio, experience, avatar },
+      { fullName, location, bio, experience, avatar, username },
       { new: true }
     ).select('-password');
 
@@ -89,12 +101,12 @@ router.put('/profile', authMiddleware, async (req, res) => {
 
 router.put('/update-profile', authMiddleware, async (req, res) => {
   const userId = req.user.id;
-  const { name, location, bio, experience } = req.body;
+  const { fullName, location, bio, experience } = req.body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { fullName: name, location, bio, experience },
+      { fullName, location, bio, experience },
       { new: true }
     );
 
@@ -103,7 +115,6 @@ router.put('/update-profile', authMiddleware, async (req, res) => {
     }
 
     res.json({
-      name: updatedUser.name,
       fullName: updatedUser.fullName,
       location: updatedUser.location,
       bio: updatedUser.bio,
@@ -119,22 +130,32 @@ router.put('/update-profile', authMiddleware, async (req, res) => {
 
 // Register route
 router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { username, email, password } = req.body;
 
   try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ msg: '📧 Email is already registered' });
+    // Check if email already exists
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json({ msg: '📧 The email is already registered.' });
     }
 
+    // Check if username already exists
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
+      return res.status(400).json({ msg: '👤 The username is already taken.' });
+    }
+
+    // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Create a new user
     const newUser = new User({
-      name,
+      username,
       email,
       password: hashedPassword,
     });
 
+    // Save the new user to the database
     await newUser.save();
     res.status(201).json({ msg: '✅ Registration successful!' });
   } catch (err) {
@@ -143,27 +164,34 @@ router.post('/register', async (req, res) => {
   }
 });
 
+
 // LOGIN
 router.post('/login', async (req, res) => {
   try {
-    const email = req.body.email.toLowerCase();
-    const password = req.body.password;
-
-    // Check if email and password are provided
-    if (!email || !password) {
-      return res.status(400).json({ msg: '❌ يجب تقديم البريد الإلكتروني وكلمة المرور' });
+    const { email, username, password } = req.body;
+    
+    // Check if either email or username and password are provided
+    if ((!email && !username) || !password) {
+      return res.status(400).json({ msg: '❌ يجب تقديم البريد الإلكتروني أو اسم المستخدم وكلمة المرور' });
     }
 
-    // Look for user in the database
-    const user = await User.findOne({ email });
+    let user;
+
+    // If email is provided, search by email, otherwise by username
+    if (email) {
+      user = await User.findOne({ email: email.toLowerCase() });
+    } else {
+      user = await User.findOne({ username: username.toLowerCase() });
+    }
+
     if (!user) {
-      return res.status(401).json({ msg: '❌ البريد الإلكتروني أو كلمة المرور غير صحيحة' });
+      return res.status(401).json({ msg: '❌ البريد الإلكتروني/اسم المستخدم أو كلمة المرور غير صحيحة' });
     }
 
     // Compare password (hashed)
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ msg: '❌ البريد الإلكتروني أو كلمة المرور غير صحيحة' });
+      return res.status(401).json({ msg: '❌ البريد الإلكتروني/اسم المستخدم أو كلمة المرور غير صحيحة' });
     }
 
     // Create JWT token
@@ -176,6 +204,7 @@ router.post('/login', async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        username: user.username, // Include username in the response
       }
     });
   } catch (err) {
@@ -200,7 +229,14 @@ router.post('/follow/:id', authMiddleware, async (req, res) => {
     await currentUser.save();
   }
 
-  res.json({ msg: 'Followed successfully', newFollowerCount: targetUser.followers.length });
+  // Send the updated following count for the current user
+  const updatedFollowingCount = currentUser.following.length;
+
+  res.json({ 
+    msg: 'Followed successfully',
+    newFollowerCount: targetUser.followers.length,
+    newFollowingCount: updatedFollowingCount
+  });
 });
 
 router.post('/unfollow/:id', authMiddleware, async (req, res) => {
@@ -215,8 +251,18 @@ router.post('/unfollow/:id', authMiddleware, async (req, res) => {
   await targetUser.save();
   await currentUser.save();
 
-  res.json({ msg: 'Unfollowed successfully', newFollowerCount: targetUser.followers.length });
+  // Send the updated following count for the current user
+  const updatedFollowingCount = currentUser.following.length;
+
+  res.json({ 
+    msg: 'Unfollowed successfully',
+    newFollowerCount: targetUser.followers.length,
+    newFollowingCount: updatedFollowingCount
+  });
 });
+
+
+
 
 // Add a new plant
 router.post('/plants', authMiddleware, async (req, res) => {
@@ -404,11 +450,11 @@ router.get('/posts', authMiddleware, async (req, res) => {
     const posts = await ForumPost.find(query)
       .populate({
         path: 'author',
-        select: 'name'
+        select: 'username'
       })
       .populate({
         path: 'replies.author',
-        select: 'name'
+        select: 'username'
       })
       .sort({ createdAt: -1 });
 

@@ -7,6 +7,7 @@ body.forum-page {
   color: #333;
 }
 
+
 /* ————————————————————————————————————————————
    الهيدر والتنقل
    ———————————————————————————————————————————— */
@@ -36,13 +37,23 @@ body.forum-page {
 }
 .nav-menu a {
   margin: 0 10px;
-  text-decoration: none;
   color: #4CAF50;
+  text-decoration: none;
   font-weight: 500;
-  transition: color 0.2s;
+  transition: color 0.3s ease;
+  padding: 8px 12px;
+  border-radius: 5px;
 }
+
 .nav-menu a:hover {
-  color: #2196F3;
+  background: #4CAF50;
+  color: rgb(255, 255, 255);
+}
+
+.nav-menu a.active {
+  background: #4CAF50;  /* Highlight background */
+  color: #fff;          /* Text color for the active link */
+  font-weight: 700;      /* Optional: Make it bolder */
 }
 
 /* ————————————————————————————————————————————
@@ -323,10 +334,12 @@ body.forum-page {
   color: #388E3C;
   text-decoration: none;
   font-weight: 500;
+  cursor: pointer;
 }
 .post-detail-card .meta .detail-author:hover {
   text-decoration: underline;
 }
+
 .post-detail-card .post-image {
   display: block;
   margin: 0 auto 20px;

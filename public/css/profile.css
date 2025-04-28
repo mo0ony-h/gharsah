@@ -52,6 +52,13 @@ body.profile-page {
     color: rgb(255, 255, 255);
 }
 
+.nav-menu a.active {
+    background: #4CAF50;  /* Highlight background */
+    color: #fff;          /* Text color for the active link */
+    font-weight: 700;      /* Optional: Make it bolder */
+}
+
+
 /* قسم الملف الشخصي */
 .profile-section {
     max-width: 1200px;
@@ -82,6 +89,7 @@ body.profile-page {
 }
 
 #username {
+    text-align: center;
     font-size: 2.2rem;
     color: #2E7D32;
     margin-bottom: 1rem;

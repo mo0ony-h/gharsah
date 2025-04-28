@@ -4,10 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const name = document.getElementById('name').value.trim();
+    const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm-password').value;
+    const password = document.getElementById('password').value.trim();
+    const confirmPassword = document.getElementById('confirm-password').value.trim();
+
+    // Check if any required field is empty
+    if (!username || !email || !password || !confirmPassword) {
+      alert('❌ يرجى ملء جميع الحقول');
+      return;
+    }
 
     // Check if passwords match
     if (password !== confirmPassword) {
@@ -19,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
+        body: JSON.stringify({username, email, password })
       });
     
       const data = await response.json();

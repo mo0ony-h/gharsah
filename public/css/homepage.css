@@ -45,11 +45,20 @@ body.home-page {
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
-  }
-  
-  .nav-menu a:hover {
-    color: #2196F3;
-  }
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+.nav-menu a:hover {
+    background: #4CAF50;
+    color: rgb(255, 255, 255);
+}
+
+.nav-menu a.active {
+    background: #4CAF50;  /* Highlight background */
+    color: #fff;          /* Text color for the active link */
+    font-weight: 700;      /* Optional: Make it bolder */
+}
   
   /* قسم hero */
   .hero-section {

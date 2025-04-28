@@ -1,20 +1,22 @@
 // DOM elements
 const form = document.querySelector('.sign-in-form');
-const emailInput = document.getElementById('email');
+const emailOrUsernameInput = document.getElementById('emailOrUsername');
 const passwordInput = document.getElementById('password');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault(); // Prevent form from submitting normally
 
   // Get user input
-  const email = emailInput.value.trim();
+  const emailOrUsername = emailOrUsernameInput.value.trim();
   const password = passwordInput.value.trim();
 
   // Check if fields are empty
-  if (!email || !password) {
+  if (!emailOrUsername || !password) {
     alert('يرجى ملء جميع الحقول');
     return;
   }
+
+  const loginData = emailOrUsername.includes('@') ? { email: emailOrUsername, password } : { username: emailOrUsername, password };
 
   try {
     const response = await fetch('/api/auth/login', {
@@ -22,7 +24,7 @@ form.addEventListener('submit', async (e) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify(loginData),
     });
 
     const data = await response.json();

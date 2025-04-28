@@ -54,7 +54,6 @@ const editModal = document.getElementById("edit-modal");
     window.addEventListener("click", e => {
         if (e.target === editModal) editModal.style.display = "none";
     });
-// ✅ Put this at the top of your JS file or before you add any event listeners
 function openEditModal(id) {
     const card = document.querySelector(`.diary-card[data-id="${id}"]`);
     document.getElementById("edit-id").value = id;
@@ -63,7 +62,6 @@ function openEditModal(id) {
     document.getElementById("edit-type").value = card.querySelector(".plant-type").textContent;
     document.getElementById("edit-reminder").value = parseInt(card.querySelector(".plant-reminder").textContent);
 
-    // ✅ Show the modal
     document.getElementById("edit-modal").style.display = "block";
 }
 
@@ -110,7 +108,7 @@ function initCard(card) {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // required if route is protected
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ lastWatered: now.toISOString() }),
         })
@@ -267,10 +265,22 @@ async function uploadProgressImage(plantId, base64Image) {
 
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-menu a');
+  
+    navLinks.forEach(link => {
+      if (link.href.includes(currentPath)) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+    
     
 
     try {
-        fetchPlants(); // Fetch and render saved plants on page load
+        fetchPlants(); 
           
     } catch (error) {
         console.error("Error loading plants:", error);

@@ -65,6 +65,9 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/html/index.html'));
 });
 
+app.get('/profile/:username', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/html/profile.html'));
+});
 
 // Start the server
 const PORT = process.env.PORT || 3000;
