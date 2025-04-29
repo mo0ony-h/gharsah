@@ -2,17 +2,19 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <title>غرسة – المنتدى الزراعي</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>غرسة - الصفحة الرئيسية</title>
-  <link rel="stylesheet" href="../css/homepage.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/forum.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="home-page">
+
+  <!-- الهيدر -->
+<body class="forum-page">
 
   <!-- الهيدر -->
   <header class="main-header">
     <div class="logo-area">
-      <img src="../images/logo.png" alt="شعار غرسة" class="logo-img-small">
+      <img src="../images/logo.png" alt="شعار غرسة" class="logo-img">
       <h1>غرسة</h1>
     </div>
     <nav class="nav-menu">
@@ -24,63 +26,80 @@
     </nav>
   </header>
 
-  <!-- قسم ترحيبي -->
-  <section class="hero-section">
-    <div class="hero-content">
-      <h2>لنزرع المستقبل معًا 🌱</h2>
-      <p>غرسة هو تطبيق بيئي مبتكر يساعدك على توثيق زراعتك، التعلم من المجتمع، والمساهمة في الحفاظ على البيئة.</p>
-      <a href="#" id="start-button" class="btn-primary">ابدأ رحلتك</a>
+  <main class="forum-container">
+    <h2>🌿 المنتدى الزراعي</h2>
+    <p class="intro">شارك خبراتك الزراعية واستفساراتك مع مجتمع غرسة.</p>
+
+    <!-- أدوات: بحث + تصفية + إضافة منشور -->
+    <div class="forum-tools">
+      <input type="text" id="search-input" placeholder="🔍 ابحث في المنتدى...">
+      <select id="filter-category">
+        <option value="">عرض كل التصنيفات</option>
+        <option value="نصيحة">نصيحة</option>
+        <option value="استفسار">استفسار</option>
+        <option value="تجربة">تجربة</option>
+      </select>
+      <button id="new-post-btn">➕ إضافة منشور جديد</button>
     </div>
-  </section>
 
-  <!-- من نحن -->
-  <section class="about-section">
-    <h3>عن غرسة</h3>
-    <p>
-      غرسة هو منصة رقمية تسعى إلى تمكين الأفراد في المجتمع من الزراعة والمساهمة في نشر المساحات الخضراء.  
-      من خلال أدوات ذكية، ومجتمع داعم، نعيد الحياة للطبيعة 🌳.
-    </p>
-  </section>
+    <!-- قائمة المنشورات -->
+    <div class="posts-list" id="postsList"></div>
+  </main>
 
-  <!-- مميزات -->
-  <section class="features-section">
-    <h3 class="section-title">مميزات غرسة</h3>
-    <div class="features-grid">
-
-      <div class="feature-card">
-        <h4>📸 توثيق يوميات النباتات</h4>
-        <p>تابع نمو نباتاتك وسجل ملاحظاتك في دفتر إلكتروني خاص بكل شجرة.</p>
-      </div>
-
-      <div class="feature-card">
-        <h4>🌍 مجتمع بيئي</h4>
-        <p>تفاعل مع المهتمين بالزراعة من مختلف مناطق المملكة.</p>
-      </div>
-
-      <div class="feature-card">
-        <h4>📚 تعليم بيئي</h4>
-        <p>مقالات ومصادر تساعدك على فهم كيفية العناية بالنباتات.</p>
-      </div>
-
-      <div class="feature-card">
-        <h4>📍 خريطة الأشجار</h4>
-        <p>حدد موقع كل شجرة زرعتها وساهم في تتبع التوسع الأخضر.</p>
-      </div>
-
-      <div class="feature-card">
-        <h4>🛒 متجر للمشاتل</h4>
-        <p>تصفح واطلب شتلات من مشاتل قريبة توصلك للبيت.</p>
-      </div>
-
-      <div class="feature-card">
-        <h4>🤖 شات بوت ذكي</h4>
-        <p>مساعد رقمي يجاوبك على أسئلتك الزراعية بسرعة.</p>
-      </div>
-
+  <!-- مودال إضافة منشور -->
+  <div id="post-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="close-post-modal">&times;</span>
+      <h3>إضافة منشور جديد</h3>
+      <form id="post-form">
+        <div class="form-group">
+          <label for="post-title">عنوان المنشور</label>
+          <input type="text" id="post-title" required>
+        </div>
+        <div class="form-group">
+          <label for="post-category">التصنيف</label>
+          <select id="post-category" required>
+            <option value="نصيحة">نصيحة</option>
+            <option value="استفسار">استفسار</option>
+            <option value="تجربة">تجربة</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="post-content">المحتوى</label>
+          <textarea id="post-content" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="post-img-file">أضف صورة (اختياري)</label>
+          <input type="file" id="post-img-file" accept="image/*">
+        </div>
+        <button type="submit" class="btn-submit">نشر</button>
+      </form>
     </div>
-  </section>
+  </div>
 
-  <!-- سكربت -->
-  <script src="../js/home.js"></script>
+  <div id="reply-modal" style="display: none;">
+    <div class="modal-content">
+      <h3>رد على المنشور</h3>
+      <textarea id="reply-content" placeholder="اكتب ردك هنا..."></textarea>
+      <input type="file" id="reply-image" accept="image/*">
+      <button id="submit-reply" class="btn-action reply-btn">نشر الرد</button>
+      <button id="close-reply-modal" class="btn-action delete-btn">إغلاق</button>
+    </div>
+  </div>
+  
+
+  <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
+  <script src="https://files.bpcontent.cloud/2025/04/22/16/20250422161954-2QKUTDMG.js"></script>  
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+  
+    hamburger.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+  </script>
+
+  <script src="../js/forum.js" type="text/javascript"></script>
 </body>
 </html>

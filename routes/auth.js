@@ -67,7 +67,7 @@ router.get('/profile', authMiddleware, async (req, res) => {
   }
 });
 
-router.get('/profile/:username', async (req, res) => {
+router.get('/profile/:username', authMiddleware, async (req, res) => {
   try {
     const user = await User.findOne({ username: req.params.username }).select('-password');
     
@@ -437,7 +437,7 @@ router.delete("/plants/:plantId/progress/:imageId", authMiddleware, async (req, 
 
 
 // Get all forum posts
-router.get('/posts', authMiddleware, async (req, res) => {
+router.get('/posts', async (req, res) => {
   try {
     const { category } = req.query;
 

@@ -56,9 +56,15 @@ async function loadPosts() {
   const categoryFilter = document.getElementById("filter-category").value;
   const token = localStorage.getItem('token');
 
-  const tokenPayload = JSON.parse(atob(token.split('.')[1]));
-  const loggedInUserId = tokenPayload.id;  
-  
+  let loggedInUserId = null;
+  if (token) {
+    try {
+      const tokenPayload = JSON.parse(atob(token.split('.')[1]));
+      loggedInUserId = tokenPayload.id;
+    } catch (err) {
+      console.error('Invalid token:', err);
+    }
+  }
 
   try {
     let url = '/api/auth/posts';
@@ -66,11 +72,9 @@ async function loadPosts() {
       url += `?category=${categoryFilter}`;
     }
 
-    const res = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
+    const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+    const res = await fetch(url, { headers });
 
     if (!res.ok) throw new Error("Failed to load posts");
 
@@ -81,27 +85,32 @@ async function loadPosts() {
     }
 
     container.innerHTML = posts.map(post => `
-      <div class="post">
-      <h4><a href="/profile/${post.author?.username}" class="author-link">${post.author?.username || "Unknown"}</a></h4>
-        <p>العنوان: ${post.title}</p>
-        <p>المحتوى: ${post.content}</p>
-        <small>${new Date(post.createdAt).toLocaleString('ar-EG')}</small>
-        <div class="post-actions">
-          <button class="btn-action" onclick="likePost('${post._id}')">❤️ ${post.likes ?? 0}</button>
-          <button class="btn-action" onclick="openReplyModal('${post._id}')">💬 رد</button>
-          ${post.author?._id === loggedInUserId ? `
-            <button class="btn-action" onclick="deletePost('${post._id}')">🗑️ حذف المنشور</button>
-          ` : ''}
-        </div>
+    <div class="post-list">
+    <div class="post-card">
+      <div class="post-header">
+        <h4><a href="/profile/${post.author?.username}" class="author-link">${post.author?.username || "Unknown"}</a></h4>
+        <div class="meta">${new Date(post.createdAt).toLocaleString('ar-EG')}</div>
+      </div>
+        
+      <div class="post-body">
+        <p class="post-title">العنوان: ${post.title}</p>
+        <p class="post-content">المحتوى: ${post.content}</p>
+      </div>
+        
+      <div class="post-actions">
+        ${token ? `<button class="btn-action like-btn" onclick="likePost('${post._id}')">❤️ ${post.likes ?? 0}</button>` : `<span>❤️ ${post.likes ?? 0}</span>`}
+        ${token ? `<button class="btn-action reply-btn" onclick="openReplyModal('${post._id}')">💬 رد</button>` : ''}
+        ${token && post.author?._id === loggedInUserId ? `<button class="btn-action delete-btn" onclick="deletePost('${post._id}')">🗑️ حذف المنشور</button>` : ''}
+      </div>
+
+      <div class="post-replies">
         ${post.replies.map(reply => `
-          <div class="reply">
-            <p><strong><a href="/profile/${reply.author?.username}" class="author-link">${reply.author?.username || "Unknown"}</a></strong>: ${reply.content}</p>
-            ${reply.author?._id === loggedInUserId ? `
-          <button class="btn-action" onclick="deleteReply('${post._id}', '${reply._id}')">🗑️ حذف الرد</button>
-        ` : ''}
+          <div class="reply-card">
+            <h4><strong><a href="/profile/${reply.author?.username}" class="author-link">${reply.author?.username || "Unknown"}</a></strong>: ${reply.content}</h4>
+            ${token && reply.author?._id === loggedInUserId ? `<button class="btn-action delete-btn" onclick="deleteReply('${post._id}', '${reply._id}')">🗑️ حذف الرد</button>` : ''}
           </div>
-        `).join('')}        
-        </div>
+        `).join('')}
+      </div>
       </div>
     `).join('');
 
@@ -210,7 +219,6 @@ document.getElementById('close-reply-modal').addEventListener('click', () => {
   document.getElementById('reply-modal').style.display = 'none';
 });
 
-// Submit a reply
 // Submit a reply
 document.getElementById('submit-reply').addEventListener('click', async () => {
   const replyContent = document.getElementById('reply-content').value;
