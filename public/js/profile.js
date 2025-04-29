@@ -182,6 +182,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function loadPrivateProfile() {
     try {
       const res = await fetch('/api/auth/profile', {
+        credentials: 'include',
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();

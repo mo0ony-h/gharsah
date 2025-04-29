@@ -60,6 +60,10 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
+app.use(cors({
+  origin: 'https://gharsah.onrender.com',
+  credentials: true                       
+}));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/html/index.html'));
