@@ -136,21 +136,6 @@
       navMenu.classList.toggle('active');
     });
   </script>
-
-  <script>
-    const username = window.location.pathname.split('/')[2];
-
-fetch(`/api/auth/profile/${username}`)
-  .then(res => res.json())
-  .then(user => {
-    document.getElementById('username').innerText = user.username;
-    document.getElementById('bio').innerText = user.bio || 'لا يوجد نبذة بعد';
-    // more fields
-  })
-  .catch(err => console.error(err));
-
-  </script>
-
   <script src="../js/profile.js"></script>
 </body>
 </html>
