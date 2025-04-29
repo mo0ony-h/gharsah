@@ -58,6 +58,13 @@ body.profile-page {
     font-weight: 700;      /* Optional: Make it bolder */
 }
 
+.burger-menu {
+    display: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #388E3C;
+  }
+
 
 /* قسم الملف الشخصي */
 .profile-section {
@@ -277,18 +284,34 @@ body.profile-page {
 }
 
 /* استجابة للجوال */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
     .main-header {
         flex-direction: column;
         text-align: center;
         padding: 1rem;
     }
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 20px;
+      }
     
-    .nav-menu {
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-top: 1rem;
-    }
+      .burger-menu {
+        display: block;
+      }
+    
+      .nav-menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: rgba(255,255,255,0.95);
+        border-radius: 8px;
+        padding: 10px 0;
+      }
+    
+      .nav-menu.active {
+        display: flex;
+      }
     
     .profile-meta {
         padding: 1.5rem;

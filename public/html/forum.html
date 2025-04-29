@@ -24,6 +24,10 @@
       <a href="../html/diary.html">يوميات النباتات</a>
       <a href="../html/shops.html">المتجر</a>
     </nav>
+    <div class="burger-menu" id="burgerMenu">
+      ☰
+    </div>
+    
   </header>
 
   <main class="forum-container">
@@ -92,13 +96,14 @@
   <script src="https://files.bpcontent.cloud/2025/04/22/16/20250422161954-2QKUTDMG.js"></script>  
 
   <script>
-    const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('navMenu');
+    const burger = document.getElementById('burgerMenu');
+    const navMenu = document.querySelector('.nav-menu');
   
-    hamburger.addEventListener('click', () => {
+    burger.addEventListener('click', () => {
       navMenu.classList.toggle('active');
     });
   </script>
+  
 
   <script src="../js/forum.js" type="text/javascript"></script>
 </body>

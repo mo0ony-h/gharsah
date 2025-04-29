@@ -12,7 +12,7 @@
   <!-- الهيدر -->
   <header class="main-header">
     <div class="logo-area">
-      <img src="../images/logo.png" alt="شعار غرسة" class="logo-img-small">
+      <img src="../images/logo.png" alt="شعار غرسة" class="logo-img">
       <h1>غرسة</h1>
     </div>
     <nav class="nav-menu">
@@ -22,6 +22,9 @@
       <a href="../html/diary.html">يوميات النباتات</a>
       <a href="../html/shops.html">المتجر</a>
     </nav>
+    <div class="burger-menu" id="burgerMenu">
+      ☰
+    </div>
   </header>
 
   <!-- قسم ترحيبي -->
@@ -81,6 +84,14 @@
   </section>
 
   <!-- سكربت -->
+  <script>
+    const burger = document.getElementById('burgerMenu');
+    const navMenu = document.querySelector('.nav-menu');
+  
+    burger.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+  </script>
   <script src="../js/home.js"></script>
 </body>
 </html>

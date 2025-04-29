@@ -1,5 +1,4 @@
 /* forum.css — تصميم صفحة المنتدى */
-
 body.forum-page {
   font-family: 'Roboto', sans-serif;
   margin: 0;
@@ -32,6 +31,9 @@ body.forum-page {
   font-size: 22px;
   color: #388E3C;
 }
+.nav-menu {
+  display: flex;
+}
 .nav-menu a {
   margin: 0 10px;
   color: #4CAF50;
@@ -44,6 +46,14 @@ body.forum-page {
 .nav-menu a:hover, .nav-menu a.active {
   background: #4CAF50;
   color: #fff;
+}
+
+/* برغر مينو */
+.burger-menu {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #388E3C;
 }
 
 /* الحاوية الرئيسية */
@@ -99,7 +109,6 @@ body.forum-page {
 .post-card {
   background: #ffffff;
   border-radius: 16px;
-  margin-bottom: 10px;
   padding: 24px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -113,6 +122,8 @@ body.forum-page {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 .post-header h4 {
   margin: 0;
@@ -155,14 +166,29 @@ body.forum-page {
   color: #2196F3;
 }
 
-/* المودال */
+/* الردود */
+.reply-card {
+  background: #FBFBFB;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  padding: 15px 20px;
+}
+.author-link {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2e7d32;
+}
+.reply-content {
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* مودال */
 .modal {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   background: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
@@ -170,10 +196,11 @@ body.forum-page {
 }
 .modal-content {
   background: #fff;
+  padding: 20px;
+  border-radius: 8px;
   width: 90%;
   max-width: 600px;
-  border-radius: 20px;
-  overflow: hidden;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 .modal-content .close {
   position: absolute;
@@ -182,8 +209,11 @@ body.forum-page {
   color: #555;
   cursor: pointer;
 }
+#reply-modal .modal-content {
+  width: 90%;
+}
 
-/* مودال إضافة منشور */
+/* إضافة منشور */
 #post-modal .modal-content {
   border-top: 6px solid #388E3C;
 }
@@ -222,94 +252,47 @@ body.forum-page {
   cursor: pointer;
 }
 
-/* الردود */
-.reply-card {
-  background: #FBFBFB;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  padding: 15px 20px;
-}
-.author-link{
-  margin: 0;
-  font-size: 22px;
-  font-weight: 700;
-  color: #2e7d32;
-}
-.reply-content {
-  font-size: 16px;
-  line-height: 1.7;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  .forum-tools {
-    flex-direction: column;
-  }
-  .post-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-/* Base styles for all action buttons */
-.btn-action {
+/* الأزرار */
+.btn-action, button {
   padding: 8px 16px;
-  background-color: #F5F5F5;
-  border: 1px solid #DDD;
+  border: 1px solid #ddd;
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out;
   color: #333;
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
-
-/* Hover effect for buttons */
 .btn-action:hover {
   background-color: #e0e0e0;
 }
-
-/* Hover effect for the like button */
 .btn-action.like-btn:hover {
   background-color: #e67e00;
   color: #fff;
 }
-
-/* Hover effect for the reply button */
 .btn-action.reply-btn:hover {
-  color: #fff;
   background-color: #45a049;
+  color: #fff;
 }
-
 .btn-action.delete-btn:hover {
   background-color: #d32f2f;
-  color: #fff; 
+  color: #fff;
+}
+button:hover {
+  background-color: #e0e0e0;
+}
+#submit-reply:hover {
+  background-color: #45a049;
+  color: white;
+}
+#close-reply-modal:hover {
+  background-color: #d32f2f;
+  color: white;
 }
 
-/* Modal Styles */
-#reply-modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
+/* إدخال صورة ورد */
 textarea {
   width: 100%;
   height: 100px;
@@ -319,7 +302,6 @@ textarea {
   margin-bottom: 10px;
   font-size: 14px;
 }
-
 input[type="file"] {
   margin-bottom: 10px;
   padding: 6px;
@@ -328,91 +310,69 @@ input[type="file"] {
   border-radius: 8px;
 }
 
-/* Button styles */
-button {
-  padding: 8px 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s ease-in-out;
-  margin-right: 10px; /* Space between buttons */
-}
-
-button:hover {
-  background-color: #e0e0e0;
-}
-
-#submit-reply:hover {
-  background-color: #45a049;
-  color: white;
-}
-
-#close-reply-modal:hover {
-  background-color: #d32f2f;
-  color: white;
-}
-
-/* Additional Mobile Responsive Enhancements */
+/* ✅ Responsive */
 @media (max-width: 600px) {
-  /* Header adjustments */
   .main-header {
     flex-direction: column;
     align-items: flex-start;
     padding: 10px 20px;
   }
-  .nav-menu {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
-  }
-  .nav-menu a {
-    margin: 6px 0;
-    width: 100%;
-    text-align: center;
+
+  .burger-menu {
+    display: block;
   }
 
-  /* Forum container */
+  .nav-menu {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background: rgba(255,255,255,0.95);
+    border-radius: 8px;
+    padding: 10px 0;
+  }
+
+  .nav-menu.active {
+    display: flex;
+  }
+
   .forum-container {
     margin: 20px 10px;
     padding: 15px;
   }
 
-  /* Forum tools */
   .forum-tools {
-    flex-direction: column;
-    gap: 10px;
+    padding: 0 15px; /* Ensure content doesn't touch edges */
+    gap: 8px;  /* Reduce gap between elements */
   }
-  #search-input, #filter-category, #new-post-btn {
+
+  #search-input,
+  #filter-category,
+  #new-post-btn {
+    padding: 10px 14px;
+    font-size: 16px;  /* Adjust font size for better readability */
     width: 100%;
   }
 
-  /* Post cards */
-  .post-card {
-    padding: 16px;
-  }
-  .post-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+  #search-input {
+    height: 40px;  /* Adjust height for better balance */
   }
 
-  /* Modal content */
-  .modal-content {
-    width: 95%;
-    padding: 15px;
+  #new-post-btn {
+    margin-top: 10px;  /* Add margin for better spacing */
   }
-
-  /* Reply modal content */
-  #reply-modal .modal-content {
-    width: 90%;
-  }
-
-  /* Buttons */
-  button, .btn-action {
+  .btn-action,
+  button {
     width: 100%;
     margin-right: 0;
     margin-bottom: 10px;
+  }
+
+  .post-card {
+    padding: 16px;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 15px;
   }
 }

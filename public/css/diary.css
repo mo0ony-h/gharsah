@@ -20,9 +20,9 @@ body.diary-page {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #FFFFFF;
+    background: rgba(255,255,255,0.95);
     padding: 15px 30px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -50,15 +50,21 @@ body.diary-page {
     border-radius: 5px;
 }
 
-.nav-menu a:hover {
-    background: #4CAF50;
-    color: rgb(255, 255, 255);
+.nav-menu a:hover, .nav-menu a.active {
+  background: #4CAF50;
+  color: #fff;
 }
 
 .nav-menu a.active {
     background: #4CAF50;  /* Highlight background */
     color: #fff;          /* Text color for the active link */
     font-weight: 700;      /* Optional: Make it bolder */
+}
+.burger-menu {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #388E3C;
 }
   
   /*-----------------------------------
@@ -348,18 +354,104 @@ body.diary-page {
   /*-----------------------------------
     استجابات للشاشات الصغيرة
   -----------------------------------*/
-  @media (max-width: 768px) {
-    .diary-grid {
-      grid-template-columns: 1fr;
+  @media (max-width: 600px) {
+    .diary-header {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 20px 15px 10px;
+      gap: 10px;
     }
     .main-header {
       flex-direction: column;
+      align-items: flex-start;
+      padding: 10px 20px;
+    }
+  
+    .burger-menu {
+      display: block;
+    }
+  
+    .nav-menu {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      background: rgba(255,255,255,0.95);
+      border-radius: 8px;
+      padding: 10px 0;
+    }
+  
+    .nav-menu.active {
+      display: flex;
+    }
+  
+    .diary-header h2 {
+      font-size: 20px;
+    }
+  
+    .add-button {
+      width: 100%;
+      font-size: 15px;
       text-align: center;
     }
-    .nav-menu {
-      margin-top: 10px;
+  
+    .diary-container {
+      padding: 0 15px 40px;
+    }
+  
+    .diary-card {
+      padding: 12px;
+    }
+  
+    .diary-card h4.plant-name {
+      font-size: 16px;
+    }
+  
+    .diary-card p {
+      font-size: 13px;
+    }
+  
+    .card-actions {
+      flex-direction: column;
+      gap: 6px;
+    }
+  
+    .water-btn,
+    .edit-btn,
+    .delete-btn {
+      width: 100%;
+      font-size: 14px;
+    }
+  
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      font-size: 14px;
+      padding: 10px;
+    }
+  
+    .btn-submit {
+      width: 100%;
+      font-size: 15px;
+    }
+  
+    .modal-content {
+      width: 95%;
+      padding: 1.5rem;
+    }
+  
+    .progress-item {
+      width: 90px;
+    }
+  
+    .progress-item img {
+      height: 70px;
+    }
+  
+    .add-progress-btn {
+      width: 100%;
     }
   }
+  
   
  /* Lightbox تكبير الصورة */
 .lightbox {

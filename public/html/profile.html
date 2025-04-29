@@ -24,6 +24,9 @@
       <a href="../html/diary.html">يوميات النباتات</a>
       <a href="../html/shops.html">المتجر</a>
     </nav>
+    <div class="burger-menu" id="burgerMenu">
+      ☰
+    </div>
   </header>
 
   <div id="auth-section">
@@ -124,6 +127,15 @@
   </section>
   <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
   <script src="https://files.bpcontent.cloud/2025/04/22/16/20250422161954-2QKUTDMG.js"></script>  
+
+  <script>
+    const burger = document.getElementById('burgerMenu');
+    const navMenu = document.querySelector('.nav-menu');
+  
+    burger.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+  </script>
 
   <script>
     const username = window.location.pathname.split('/')[2];

@@ -22,6 +22,9 @@
       <a href="../html/diary.html">يوميات النباتات</a>
       <a href="../html/shops.html">المتجر</a>
     </nav>
+    <div class="burger-menu" id="burgerMenu">
+      ☰
+    </div>
   </header>
 
   <!-- المحتوى -->
@@ -90,6 +93,15 @@
   
   <!-- خرائط Google API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDkf7I8a9NqoQC56Wn5fh5qaCNtFWRNUlw"></script>
+
+  <script>
+    const burger = document.getElementById('burgerMenu');
+    const navMenu = document.querySelector('.nav-menu');
+  
+    burger.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+  </script>
   <script src="../js/diary.js"></script>
 
   <!-- Lightbox Popup -->
