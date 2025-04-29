@@ -107,14 +107,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
   if (!token) {
-    authSection.style.display = 'block';
-    profileSection.style.display = 'none';
-    signinBtn.style.display = 'block';
-    signinBtn.addEventListener('click', () => {
+    if (authSection) authSection.style.display = 'block';
+    if (profileSection) profileSection.style.display = 'none';
+    if (signinBtn) {
+      signinBtn.style.display = 'block';
+      signinBtn.addEventListener('click', () => {
+        window.location.href = '../html/signin.html';
+      });
+    } else {
+      console.warn("signinBtn not found in DOM");
       window.location.href = '../html/signin.html';
-    });
+    }
     return;
   }
+  
 
   try {
     const decoded = JSON.parse(atob(token.split('.')[1]));

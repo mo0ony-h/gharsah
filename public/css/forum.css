@@ -63,11 +63,12 @@ body.forum-page {
   max-width: 900px;
   margin: 30px auto;
   padding: 20px;
+  margin-bottom: 10px;
 }
 .forum-container h2 {
   font-size: 26px;
   color: #388E3C;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 .intro {
   font-size: 15px;
