@@ -21,7 +21,6 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors()); // For handling cross-origin requests (if needed)
 app.use(session({
   secret: 'gharsah_secret_key',
   resave: false,

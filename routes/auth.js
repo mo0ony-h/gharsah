@@ -67,7 +67,7 @@ router.get('/profile', authMiddleware, async (req, res) => {
   }
 });
 
-router.get('/profile/:username', authMiddleware, async (req, res) => {
+router.get('/profile/:username', async (req, res) => {
   try {
     const user = await User.findOne({ username: req.params.username }).select('-password');
     

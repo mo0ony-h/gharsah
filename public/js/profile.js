@@ -107,20 +107,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
   if (!token) {
-    if (authSection) authSection.style.display = 'block';
-    if (profileSection) profileSection.style.display = 'none';
-    if (signinBtn) {
-      signinBtn.style.display = 'block';
-      signinBtn.addEventListener('click', () => {
-        window.location.href = '../html/signin.html';
-      });
-    } else {
-      console.warn("signinBtn not found in DOM");
+    authSection.style.display = 'block';
+    profileSection.style.display = 'none';
+    signinBtn.style.display = 'block';
+    signinBtn.addEventListener('click', () => {
       window.location.href = '../html/signin.html';
-    }
+    });
     return;
   }
-  
 
   try {
     const decoded = JSON.parse(atob(token.split('.')[1]));
@@ -182,7 +176,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function loadPrivateProfile() {
     try {
       const res = await fetch('/api/auth/profile', {
-        credentials: 'include',
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();

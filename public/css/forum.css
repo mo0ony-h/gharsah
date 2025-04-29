@@ -63,7 +63,6 @@ body.forum-page {
   max-width: 900px;
   margin: 30px auto;
   padding: 20px;
-  margin-bottom: 10px;
 }
 .forum-container h2 {
   font-size: 26px;
@@ -110,6 +109,7 @@ body.forum-page {
 .post-card {
   background: #ffffff;
   border-radius: 16px;
+  margin-bottom: 10px;
   padding: 24px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
