@@ -217,55 +217,75 @@ body.forum-page {
 /* إضافة منشور */
 #post-modal .modal-content {
   border-top: 6px solid #388E3C;
+  max-width: 600px;
+  margin: auto;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 90%;
 }
+
 #post-modal h3 {
   margin: 0;
-  padding: 20px 30px;
-  font-size: 22px;
+  padding: 1rem;
+  font-size: 1.25rem;
   color: #fff;
   background: linear-gradient(90deg, #4CAF50, #388E3C);
 }
+
 #post-form {
-  padding: 20px 30px;
+  padding: 1.2rem;
 }
+
 #post-form .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
+
 #post-form label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
 }
+
 #post-form input[type="text"],
 #post-form select,
 #post-form textarea {
   width: 100%;
-  padding: 12px 14px;
+  padding: 0.75rem;
   border: 2px solid #E0E0E0;
   border-radius: 8px;
+  font-size: 1rem;
 }
+
 #post-form .btn-submit {
   width: 100%;
-  padding: 14px;
+  padding: 0.9rem;
   background: #388E3C;
   color: #fff;
   border: none;
   border-radius: 8px;
+  font-size: 1rem;
   cursor: pointer;
 }
-
-/* الأزرار */
+#close-post-modal:hover {
+  background-color: #d32f2f;
+  color: white;
+}
+/* Buttons */
 .btn-action, button {
-  padding: 8px 16px;
+  padding: 0.6rem 1rem;
   border: 1px solid #ddd;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.9rem;
   transition: background-color 0.2s ease-in-out;
   color: #333;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.4rem;
 }
+
 .btn-action:hover {
   background-color: #e0e0e0;
 }
@@ -311,7 +331,7 @@ input[type="file"] {
   border-radius: 8px;
 }
 
-/* ✅ Responsive */
+/* Responsive */
 @media (max-width: 600px) {
   .main-header {
     flex-direction: column;
@@ -342,24 +362,24 @@ input[type="file"] {
   }
 
   .forum-tools {
-    padding: 0 15px; /* Ensure content doesn't touch edges */
-    gap: 8px;  /* Reduce gap between elements */
+    padding: 0 15px;
+    gap: 8px;
   }
 
   #search-input,
   #filter-category,
   #new-post-btn {
     padding: 10px 14px;
-    font-size: 16px;  /* Adjust font size for better readability */
+    font-size: 16px;
     width: 100%;
   }
 
   #search-input {
-    height: 40px;  /* Adjust height for better balance */
+    height: 40px;
   }
 
   #new-post-btn {
-    margin-top: 10px;  /* Add margin for better spacing */
+    margin-top: 10px;
   }
   .btn-action,
   button {
@@ -375,5 +395,24 @@ input[type="file"] {
   .modal-content {
     width: 95%;
     padding: 15px;
+  }
+
+  #post-modal h3 {
+    font-size: 1.1rem;
+    padding: 0.8rem;
+  }
+
+  #post-form {
+    padding: 1rem;
+  }
+
+  .btn-action, button {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  #post-form .btn-submit {
+    font-size: 0.95rem;
+    padding: 0.8rem;
   }
 }
