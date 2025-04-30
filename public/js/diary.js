@@ -268,6 +268,21 @@ async function uploadProgressImage(plantId, base64Image) {
 
 document.addEventListener("DOMContentLoaded", async () => {
 
+    if (window.innerWidth <= 600) {
+        const diaryCards = document.querySelectorAll('.diary-card');
+  
+        diaryCards.forEach(card => {
+          const header = card.querySelector('.card-header');
+          header.addEventListener('click', () => {
+            // Close all others
+            diaryCards.forEach(c => {
+              if (c !== card) c.classList.remove('expanded');
+            });
+            card.classList.toggle('expanded');
+          });
+        });
+      }
+
     const currentPath = window.location.pathname;
     const navLinks = document.querySelectorAll('.nav-menu a');
   
