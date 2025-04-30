@@ -20,6 +20,7 @@ function createCard(plant) {
     card.setAttribute("data-user", localStorage.getItem("userId"));
 
     card.innerHTML = `
+    <div class="diary-card collapsed">
         <img src="${image || '../images/plant1.jpg'}" alt="نبتة" class="main-img"/>
         <h4 class="plant-name">${name}</h4>
         <p class="plant-notes"><strong>📝 ملاحظات:</strong> ${notes}</p>
@@ -30,17 +31,18 @@ function createCard(plant) {
         <p><strong>🧮 عمر النبتة:</strong> <span class="plant-age"></span></p>
         <p><strong>💧 آخر سقي:</strong> <span class="last-watered">${plant.lastWatered ? new Date(plant.lastWatered).toLocaleString('ar-EG') : ''}</span></p>
         <p><strong>⏰ التذكير:</strong> <span class="plant-reminder">كل ${reminderInterval} أيام</span></p>
-         <div class="progress-section">
+        <div class="progress-section">
         <h5>🖼️ سجل التقدم</h5>
         <div class="progress-gallery"></div>
         <button class="add-progress-btn">➕ أضف صورة تقدم</button>
         <input type="file" class="progress-file-input" accept="image/*" style="display: none;">
-    </div>
+        </div>
         <div class="card-actions">
             <button class="water-btn">✔️ سقيت النبتة</button>
             <button class="edit-btn">✏️ تعديل</button>
             <button class="delete-btn">🗑️ حذف</button>
         </div>
+    </div>    
     `;
 
     document.querySelector(".diary-grid").appendChild(card);
