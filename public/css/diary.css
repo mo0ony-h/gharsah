@@ -321,13 +321,12 @@ body.diary-page {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);  /* Darker modal background */
+  height: 100%;  /* Darker modal background */
   z-index: 1000;
 }
 
 .modal-content {
-  background: rgba(33, 33, 33, 0.9);  /* Dark background for modal */
+  background: rgb(187, 187, 187);  /* Dark background for modal */
   width: 90%;
   max-width: 500px;
   margin: 2rem auto;
