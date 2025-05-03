@@ -323,6 +323,7 @@ body.diary-page {
   width: 100%;
   height: 100%;  /* Darker modal background */
   z-index: 1000;
+  overflow: hidden;
 }
 
 .modal-content {
@@ -333,6 +334,8 @@ body.diary-page {
   padding: 2rem;
   border-radius: 10px;
   position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
 }
   .close,
   .close-edit {
@@ -468,7 +471,7 @@ body.diary-page {
   
     .modal-content {
       width: 95%;
-      padding: 1.5rem;
+      padding: 15px;
       max-height: 90vh;
       overflow-y: auto;
     }
