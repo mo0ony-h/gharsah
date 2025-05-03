@@ -423,49 +423,47 @@ document.getElementById("entry-form").addEventListener("submit", e => {
         if (file) {
             const reader = new FileReader();
             reader.onload = async function () {
-                updatedPlant.image = reader.result; // Base64 image
-                await updatePlantInDatabase(id, updatedPlant);
+                updatedPlant.image = reader.result;
+                await submitEdit(id, updatedPlant);
             };
             reader.readAsDataURL(file);
         } else {
-            await updatePlantInDatabase(id, updatedPlant);
+            await submitEdit(id, updatedPlant);
         }
     });
-    
-    // Helper function to update in database
-    async function updatePlantInDatabase(id, plantData) {
-        try {
-            fetch(`/api/auth/plants/${id}`, {
-                method: 'GET',  // Try a GET request first to see if the endpoint exists
-                headers: {
-                  'Content-Type': 'application/json',
-                  "Authorization": `Bearer ${localStorage.getItem("token")}`
-                }
-              })
-              .then(res => console.log(res.status))
-              .catch(err => console.error(err));
 
+    async function submitEdit(id, updatedPlant) {
+        try {
             const res = await fetch(`/api/auth/plants/${id}`, {
                 method: "PUT",
                 headers: {
-                  "Content-Type": "application/json",
-                  "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
-                body: JSON.stringify(plantData)
-              });
-    
+                body: JSON.stringify(updatedPlant),
+            });
+
+            const data = await res.json();
             if (res.ok) {
-                alert("✅ تم تحديث النبتة بنجاح");
-                location.reload();
+                // Update UI
+                const card = document.querySelector(`.diary-card[data-id="${id}"]`);
+                card.querySelector(".plant-name").textContent = updatedPlant.name;
+                card.querySelector(".plant-notes").innerHTML = `<strong>📝 ملاحظات:</strong> ${updatedPlant.notes}`;
+                card.querySelector(".plant-type").textContent = updatedPlant.type;
+                card.querySelector(".plant-reminder").textContent = `كل ${updatedPlant.reminderInterval} أيام`;
+                if (updatedPlant.image) {
+                    card.querySelector(".main-img").src = updatedPlant.image;
+                }
+
+                document.getElementById("edit-modal").style.display = "none";
+                alert("✅ تم تحديث اليومية بنجاح");
             } else {
-                const err = await res.json();
-                console.error("❌ فشل التحديث:", err);
+                alert("❌ فشل التحديث: " + data.msg);
             }
-        } catch (error) {
-            console.error("❌ خطأ أثناء التحديث:", error);
+        } catch (err) {
+            console.error("❌ Error updating plant:", err);
         }
     }
-    
 
     
      
