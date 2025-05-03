@@ -354,14 +354,6 @@ document.getElementById("entry-form").addEventListener("submit", e => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
 
-
-    // When saving location
-    const [lat, lng] = loc.split(",");
-    plantData.location = {
-      lat: parseFloat(lat),
-      lng: parseFloat(lng)
-    };
-
     const plantData = {
         name,
         notes,
@@ -370,6 +362,13 @@ document.getElementById("entry-form").addEventListener("submit", e => {
         location: loc,
         reminderInterval: reminder,
         userId,
+    };
+
+    // When saving location
+    const [lat, lng] = loc.split(",");
+    plantData.location = {
+      lat: parseFloat(lat),
+      lng: parseFloat(lng)
     };
 
     function sendAndCreateCard(image) {
