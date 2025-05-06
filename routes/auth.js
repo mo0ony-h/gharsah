@@ -11,6 +11,7 @@ const router = express.Router();
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
+app.use(express.static(path.join(__dirname, 'public')));
 
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
@@ -222,8 +223,8 @@ router.get('/verify-email', async (req, res) => {
     user.verificationToken = undefined;
     await user.save();
 
-    res.redirect('../public/html/signin.html');
-  } catch (err) {
+    res.redirect('/html/signin.html');
+    } catch (err) {
     console.error('Email verification error:', err);
     res.status(500).send('❌ Server error during email verification.');
   }
