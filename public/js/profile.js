@@ -63,13 +63,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (profileForm) {
     profileForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      
+  
       const experience = experienceSelect.value;
       const fullName = fullNameInput.value;
       const location = locationInput.value;
       const bio = bioTextarea.value;
-
+  
       try {
         const response = await fetch('/api/auth/update-profile', {
           method: 'PUT',
@@ -79,16 +78,22 @@ document.addEventListener('DOMContentLoaded', async () => {
           },
           body: JSON.stringify({ fullName, location, bio, experience }),
         });
-
+  
         const data = await response.json();
         if (response.ok) {
-          userData.name = data.fullName;
-          userData.bio = data.bio;
-          userData.location = data.location;
-          userData.experience = data.experience;
-
-          updateProfileUI();
           modal.style.display = 'none';
+  
+          const pathParts = window.location.pathname.split('/');
+          const isPublicProfile = pathParts[1] === 'profile';
+          const usernameInUrl = pathParts[2];
+  
+          if (isPublicProfile) {
+            await loadPublicProfile(usernameInUrl);
+          } else {
+            await loadPrivateProfile();
+          }
+  
+          updateProfileUI();
         } else {
           alert(data.msg || 'Error updating profile');
         }
@@ -107,6 +112,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
   if (!token) {
+    localStorage.removeItem('token');
     authSection.style.display = 'block';
     profileSection.style.display = 'none';
     signinBtn.style.display = 'block';
@@ -269,21 +275,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       const data = await response.json();
   
       if (response.ok) {
-        // Toggle follow state
         isFollowing = !isFollowing;
-  
-        // Update the button text
         followBtn.textContent = isFollowing ? 'إلغاء المتابعة' : 'متابعة';
   
-        // Update the followers count
-        const followersCountEl = document.getElementById('followers-count');
-        if (followersCountEl) {
-          followersCountEl.innerText = data.newFollowerCount;
+        const pathParts = window.location.pathname.split('/');
+        const isPublicProfile = pathParts[1] === 'profile';
+        const usernameInUrl = pathParts[2];
+  
+        if (isPublicProfile) {
+          await loadPublicProfile(usernameInUrl);
         }
   
-  
-        // Update the local userData object to reflect the changes
-        userData.followingCount = data.newFollowingCount; // Update userData with new following count
+        updateProfileUI();
       } else {
         console.error('Error:', data.msg || 'حدث خطأ أثناء متابعة المستخدم');
       }
@@ -291,5 +294,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('Error:', err);
     }
   }
+  
   
 });
