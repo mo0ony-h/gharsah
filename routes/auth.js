@@ -8,6 +8,17 @@ const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const router = express.Router();
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+const cron = require('node-cron');
+
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'gharsahapp.sa@gmail.com',
+    pass: 'bvzj tfxq yppf wbmx'
+  }
+});
 
 // Middleware
 const authMiddleware = async (req, res, next) => {
@@ -152,36 +163,72 @@ router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    // Check if email already exists
+    // Check if email or username already exists
     const existingEmail = await User.findOne({ email });
-    if (existingEmail) {
-      return res.status(400).json({ msg: '📧 The email is already registered.' });
-    }
+    if (existingEmail) return res.status(400).json({ msg: '📧 The email is already registered.' });
 
-    // Check if username already exists
     const existingUsername = await User.findOne({ username });
-    if (existingUsername) {
-      return res.status(400).json({ msg: '👤 The username is already taken.' });
-    }
+    if (existingUsername) return res.status(400).json({ msg: '👤 The username is already taken.' });
 
-    // Hash the password before saving
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user
+    // Generate a unique email verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+
+    // Create the user
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
+      verificationToken,
+      verified: false
     });
 
-    // Save the new user to the database
     await newUser.save();
-    res.status(201).json({ msg: '✅ Registration successful!' });
+
+    // Create verification link
+    const verificationLink = `http://gharsah.onrender.com/verify-email?token=${verificationToken}`;
+
+    // Send the email
+    await transporter.sendMail({
+      from: '"Gharsah App" <yourgmail@gmail.com>',
+      to: email,
+      subject: 'Verify your email',
+      html: `<h3>Welcome to Gharsah 🌱</h3>
+             <p>Click below to verify your email:</p>
+             <a href="${verificationLink}">${verificationLink}</a>`
+    });
+
+    res.status(201).json({ msg: '✅ Registered successfully! Please verify your email.' });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: '❌ Server error during registration.' });
   }
 });
+
+router.get('/verify-email', async (req, res) => {
+  const { token } = req.query;
+
+  try {
+    const user = await User.findOne({ verificationToken: token });
+
+    if (!user) {
+      return res.status(400).send('❌ Invalid or expired verification link.');
+    }
+
+    user.verified = true;
+    user.verificationToken = undefined;
+    await user.save();
+
+    res.redirect('../html/signin.html');
+  } catch (err) {
+    console.error('Email verification error:', err);
+    res.status(500).send('❌ Server error during email verification.');
+  }
+});
+
 
 
 // LOGIN
@@ -205,6 +252,9 @@ router.post('/login', async (req, res) => {
 
     if (!user) {
       return res.status(401).json({ msg: '❌ البريد الإلكتروني/اسم المستخدم أو كلمة المرور غير صحيحة' });
+    }
+    if (!user.verified) {
+      return res.status(403).json({ msg: '⚠️ Please verify your email before logging in.' });
     }
 
     // Compare password (hashed)
@@ -386,6 +436,41 @@ router.put('/plants/:id/water', authMiddleware, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Error updating watering time' });
+  }
+});
+
+cron.schedule('*/5 * * * *', async () => { 
+  try {
+
+    const plants = await Plant.find();
+
+    for (let plant of plants) {
+      const { lastWatered, reminderInterval, userId, name } = plant;
+
+      if (!lastWatered || !reminderInterval) continue;
+
+      const nextWateringDate = new Date(lastWatered);
+      nextWateringDate.setDate(nextWateringDate.getDate() + reminderInterval);
+
+      if (new Date() >= nextWateringDate) {
+
+        const user = await User.findById(userId);
+
+        if (user) {
+          const mailOptions = {
+            from: 'gharsahapp.sa@gmail.com',
+            to: user.email,
+            subject: '🌱 Time to Water Your Plant!',
+            text: `Hi ${user.username},\n\nIt's time to water your plant: ${name}. Please make sure to water it to keep it healthy!\n\nHappy Gardening!`,  // Email body
+          };
+
+          await transporter.sendMail(mailOptions);
+          console.log(`Reminder sent for plant: ${name} to user: ${user.username}`);
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Error sending watering reminders:', err);
   }
 });
 

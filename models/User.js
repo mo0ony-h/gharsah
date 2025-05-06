@@ -13,7 +13,9 @@ const userSchema = new mongoose.Schema({
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   plants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Plant' }],
   postCount: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  verified: { type: Boolean, default: false },
+  verificationToken: { type: String }
 });
 
 const User = mongoose.model('User', userSchema);

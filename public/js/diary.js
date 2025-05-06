@@ -94,18 +94,24 @@ function initCard(card) {
     card.querySelector(".water-btn").addEventListener("click", () => {
         const dw = card.querySelector(".last-watered");
         const now = new Date();
+        
         const dstr = now.toLocaleDateString("ar-EG", {
           year: "numeric",
           month: "long",
           day: "numeric",
         });
+      
         const tstr = now.toLocaleTimeString("ar-EG", {
           hour: "2-digit",
           minute: "2-digit",
         });
+      
+        // Update UI immediately with new watering time
         dw.textContent = `${dstr} ${tstr}`;
+        
         alert("✅ تم تحديث تاريخ ووقت السقي!");
-                
+      
+        // Make API request to update watering time in DB
         fetch(`/api/auth/plants/${plantId}/water`, {
           method: "PUT",
           headers: {
@@ -114,14 +120,22 @@ function initCard(card) {
           },
           body: JSON.stringify({ lastWatered: now.toISOString() }),
         })
-          .then((res) => res.json())
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error('Failed to update watering time');
+            }
+            return res.json();
+          })
           .then((data) => {
             console.log("Watering time saved to DB", data);
+            // You could add some feedback for the user based on the response, e.g. a confirmation message
           })
           .catch((err) => {
             console.error("Error updating watering time:", err);
+            alert("❌ حدث خطأ أثناء تحديث تاريخ السقي.");
           });
       });
+      
       
       
       
@@ -294,7 +308,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
     
-    
+    const reminderInput = document.getElementById('plant-reminder');
+    reminderInput.addEventListener('input', () => {
+      if (parseInt(reminderInput.value) < 1) {
+        reminderInput.value = 1;
+      }
+    });
+
 
     try {
         fetchPlants(); 

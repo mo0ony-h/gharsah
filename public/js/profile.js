@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const locationInput = document.getElementById('location-input');
   const bioTextarea = document.getElementById('bio-textarea');
   const experienceSelect = document.getElementById('experience-select');
+  const changeAvatarText = document.querySelector('.change-avatar-text');
 
   const token = localStorage.getItem('token');
 
@@ -244,10 +245,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if (usernameInUrl === loggedInUsername) {
         followBtn.style.display = 'none';
+        changeAvatarText.style.display = 'block';
         editProfileBtn.style.display = 'block';
         signoutBtn.style.display = 'block';
       } else {
         followBtn.style.display = 'block';
+        changeAvatarText.style.display = 'none';
         editProfileBtn.style.display = 'none';
         signoutBtn.style.display = 'none';
 
