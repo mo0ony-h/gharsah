@@ -188,7 +188,7 @@ router.post('/register', async (req, res) => {
     await newUser.save();
 
     // Create verification link
-    const verificationLink = `http://gharsah.onrender.com/verify-email?token=${verificationToken}`;
+    const verificationLink = `http://gharsah.onrender.com/api/auth/verify-email?token=${verificationToken}`;
 
     // Send the email
     await transporter.sendMail({
@@ -222,7 +222,7 @@ router.get('/verify-email', async (req, res) => {
     user.verificationToken = undefined;
     await user.save();
 
-    res.redirect('../html/signin.html');
+    res.redirect('../public/html/signin.html');
   } catch (err) {
     console.error('Email verification error:', err);
     res.status(500).send('❌ Server error during email verification.');
