@@ -11,7 +11,8 @@ const router = express.Router();
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
-app.use(express.static(path.join(__dirname, 'public')));
+const path = require("path");
+router.use(express.static(path.join(__dirname, 'public')));
 
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
