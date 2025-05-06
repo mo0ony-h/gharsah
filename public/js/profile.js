@@ -262,6 +262,51 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+
+  const avatarImg = document.getElementById('profile-avatar');
+const avatarInput = document.getElementById('avatar-input');
+
+avatarImg.addEventListener('click', () => {
+  if (userData.id === currentUserId) {
+    avatarInput.click();
+  }
+});
+  avatarInput.addEventListener('change', async () => {
+    const file = avatarInput.files[0];
+    if (!file) return;
+  
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64Image = reader.result;
+  
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/auth/upload-avatar', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ base64Image }),
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          userData.avatar = data.avatar;
+          document.querySelector('.profile-avatar').src = data.avatar;
+        } else {
+          alert(data.msg || 'Error uploading avatar');
+        }
+      } catch (err) {
+        console.error('Upload error:', err);
+        alert('Failed to upload avatar');
+      }
+    };
+  
+    reader.readAsDataURL(file); // Convert image to Base64
+  });
+  
   async function toggleFollow() {
     try {
       const token = localStorage.getItem('token');

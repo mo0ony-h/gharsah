@@ -87,14 +87,19 @@ async function loadPosts() {
     container.innerHTML = posts.map(post => `
     <div class="post-list">
     <div class="post-card">
-      <div class="post-header">
+     <div class="post-header">
+      <div class="author-info">
+        <img src="${post.author?.avatar || '../images/user-avatar.png'}" alt="User Avatar" class="author-avatar">
         <h4><a href="/profile/${post.author?.username}" class="author-link">${post.author?.username || "Unknown"}</a></h4>
-        <div class="meta">${new Date(post.createdAt).toLocaleString('ar-EG')}</div>
       </div>
+      <div class="meta">${new Date(post.createdAt).toLocaleString('ar-EG')}</div>
+      </div>
+
         
       <div class="post-body">
         <p class="post-title">العنوان: ${post.title}</p>
         <p class="post-content">المحتوى: ${post.content}</p>
+        ${post.image ? `<img src="data:image/jpeg;base64,${post.image}" alt="Post Image" class="post-image" style="max-width: 75%; height: auto; max-height: 200px; border-radius: 10px; margin-top: 10px;" onclick="openLightbox(this.src)">` : ''}
       </div>
         
       <div class="post-actions">
@@ -107,7 +112,8 @@ async function loadPosts() {
         ${post.replies.map(reply => `
           <div class="reply-card">
             <h4><strong><a href="/profile/${reply.author?.username}" class="author-link">${reply.author?.username || "Unknown"}</a></strong>: ${reply.content}</h4>
-            ${token && reply.author?._id === loggedInUserId ? `<button class="btn-action delete-btn" onclick="deleteReply('${post._id}', '${reply._id}')">🗑️ حذف الرد</button>` : ''}
+            ${reply.image ? `<img src="data:image/jpeg;base64,${reply.image}" alt="Reply Image" class="reply-image" style="max-width: 50%; height: auto; max-height: 100px; border-radius: 10px; margin-top: 10px;" onclick="openLightbox(this.src)">` : ''}
+            ${token && reply.author?._id === loggedInUserId ? `<br><button class="btn-action delete-btn" onclick="deleteReply('${post._id}', '${reply._id}')">🗑️ حذف الرد</button>` : ''}
           </div>
         `).join('')}
       </div>
@@ -118,6 +124,17 @@ async function loadPosts() {
     container.innerHTML = "<p>فشل في تحميل المشاركات.</p>";
     console.error("Error loading posts:", err);
   }
+}
+
+function openLightbox(src) {
+  const lightbox = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  img.src = src;
+  lightbox.style.display = 'flex';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').style.display = 'none';
 }
 
 

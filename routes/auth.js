@@ -126,7 +126,26 @@ router.put('/update-profile', authMiddleware, async (req, res) => {
   }
 });
 
+router.post('/upload-avatar', authMiddleware, async (req, res) => {
+  try {
+    const { base64Image } = req.body;
 
+    if (!base64Image.startsWith('data:image')) {
+      return res.status(400).json({ msg: 'Invalid image format' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { avatar: base64Image },
+      { new: true }
+    );
+
+    res.json({ msg: 'Avatar updated successfully', avatar: user.avatar });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error while uploading avatar' });
+  }
+});
 
 // Register route
 router.post('/register', async (req, res) => {
@@ -450,11 +469,13 @@ router.get('/posts', async (req, res) => {
     const posts = await ForumPost.find(query)
       .populate({
         path: 'author',
-        select: 'username'
+        select: 'username',
+        select: 'username avatar'
       })
       .populate({
         path: 'replies.author',
-        select: 'username'
+        select: 'username',
+        select: 'username avatar'
       })
       .sort({ createdAt: -1 });
 
